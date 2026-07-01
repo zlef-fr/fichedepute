@@ -70,7 +70,9 @@ window.STD_I18N = {
     "methodo.title": "Méthode & sources",
     "methodo.body": "Les données proviennent des jeux open data officiels de l'Assemblée nationale (licence Ouverte) : la liste des députés en exercice et l'intégralité des scrutins publics de la 17ᵉ législature. La <b>participation aux scrutins</b> est le pourcentage de scrutins publics — depuis l'entrée en fonction du député — auxquels le député est décompté nominativement — qu'il ait voté pour, contre, qu'il se soit abstenu, ou qu'il ait été présent sans prendre part au vote. Ce n'est pas la présence en séance ou en commission, qui n'est pas publiée nominativement. Chaque fiche renvoie au scrutin officiel correspondant. Aucune interprétation politique n'est ajoutée.",
     "methodo.updated": "Données mises à jour le {d}",
-    "footer.data": "Données : Assemblée nationale (licence Ouverte). Projet indépendant, non affilié.",
+    "footer.data": "Données : Assemblée nationale (licence Ouverte).",
+    "footer.madeby": "Projet indépendant, réalisé avec patriotisme",
+    "footer.views": "👁 {n} vue{s}",
     "loading": "Chargement…",
   },
   en: {
@@ -142,7 +144,9 @@ window.STD_I18N = {
     "methodo.title": "Method & sources",
     "methodo.body": "Data comes from the French National Assembly's official open datasets (Licence Ouverte): the list of sitting MPs and every public ballot of the 17th legislature. <b>Ballot turnout</b> is the share of public ballots — since the MP took office — in which the MP is recorded by name — whether they voted for, against, abstained, or were present without taking part. It is not attendance in the chamber or in committee, which is not published by name. Each card links to the corresponding official ballot. No political interpretation is added.",
     "methodo.updated": "Data updated on {d}",
-    "footer.data": "Data: French National Assembly (Licence Ouverte). Independent project, unaffiliated.",
+    "footer.data": "Data: French National Assembly (Licence Ouverte).",
+    "footer.madeby": "An independent project, made with patriotism",
+    "footer.views": "👁 {n} view{s}",
     "loading": "Loading…",
   },
 };

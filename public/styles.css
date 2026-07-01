@@ -215,6 +215,14 @@ section.block { padding: 34px 0; }
 /* ── Footer ─────────────────────────────────────────────────────────────── */
 footer.foot { border-top: 1px solid var(--line); margin-top: 50px; padding: 28px 0 48px; color: var(--muted); font-size: 13.5px; }
 footer.foot .fi { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: center; }
+.views-chip { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--ink-2); background: var(--bg-2); border: 1px solid var(--line); padding: 4px 11px; border-radius: 999px; font-size: 12.5px; white-space: nowrap; }
+.foot-credit { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 13px; }
+.foot-credit a { color: var(--bleu); font-weight: 700; }
+.fr-flag { display: inline-grid; grid-template-columns: 1fr 1fr 1fr; width: 20px; height: 14px; border-radius: 3px; overflow: hidden; box-shadow: 0 0 0 1px var(--line); vertical-align: middle; }
+.fr-flag i { display: block; }
+.fr-flag i:nth-child(1) { background: var(--bleu); }
+.fr-flag i:nth-child(2) { background: #fff; }
+.fr-flag i:nth-child(3) { background: var(--rouge); }
 
 /* ── Skeleton / loading ─────────────────────────────────────────────────── */
 .skel { background: linear-gradient(100deg, var(--bg-2) 30%, #f7f9fd 50%, var(--bg-2) 70%); background-size: 200% 100%; animation: shimmer 1.3s infinite; border-radius: 10px; }

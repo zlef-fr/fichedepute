@@ -96,6 +96,7 @@ async function render() {
   root.innerHTML = `<div class="wrap"><div class="spinner"></div></div>`;
   try {
     await STD.views[match.view](root, m);
+    STD.track(path);
   } catch (e) {
     console.error(e);
     root.innerHTML = `<div class="wrap block"><div class="prose"><h1>Oups</h1><p>${STD.esc(String(e))}</p><a class="btn btn-primary" href="/" data-link>${STD.t("fiche.back")}</a></div></div>`;
@@ -111,6 +112,26 @@ document.addEventListener("click", (e) => {
   }
 });
 window.addEventListener("popstate", render);
+
+// ── per-page view counter ─────────────────────────────────────────────────
+STD.track = async (path) => {
+  try {
+    const r = await fetch("/api/view", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ path }),
+    });
+    const { count } = await r.json();
+    // locale-aware plural: fr → 's' when >1, en → 's' when ≠1
+    const s = STD.lang === "fr" ? (count > 1 ? "s" : "") : (count === 1 ? "" : "s");
+    const label = STD.t("footer.views", { n: count == null ? "" : count.toLocaleString(STD.lang), s });
+    document.querySelectorAll("[data-views]").forEach((el) => {
+      if (count == null) { el.hidden = true; return; }
+      el.textContent = label;
+      el.hidden = false;
+    });
+  } catch {}
+};
 
 STD.render = render;
 STD.boot = () => {

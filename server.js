@@ -5,6 +5,9 @@ const fs = require("fs");
 const path = require("path");
 const data = require("./lib/data");
 const og = require("./lib/og");
+const tracker = require("./lib/tracker");
+
+const isSlug = (s) => !!data.store.bySlug[s];
 
 const PORT = process.env.PORT || 10091;
 const PUB = path.join(__dirname, "public");
@@ -59,6 +62,22 @@ const server = http.createServer((req, res) => {
     if (p === "/api/stats") return json(res, data.store.stats);
     if (p === "/api/scrutins") return json(res, { scrutins: data.store.scrutins });
     if (p === "/api/meta") return json(res, data.store.meta);
+    // per-page view counter — POST {path} increments, GET reads (no count)
+    if (p === "/api/view") {
+      if (req.method === "POST") {
+        let body = "";
+        req.on("data", (c) => { body += c; if (body.length > 2000) req.destroy(); });
+        req.on("end", () => {
+          let target = "/";
+          try { target = JSON.parse(body || "{}").path || "/"; } catch {}
+          const count = tracker.hit(target, isSlug);
+          json(res, { count, total: tracker.total() }, 200, "no-cache");
+        });
+        return;
+      }
+      const count = tracker.get(u.searchParams.get("path") || "/", isSlug);
+      return json(res, { count, total: tracker.total() }, 200, "no-cache");
+    }
     if (p === "/api/search") {
       const q = u.searchParams.get("q") || "";
       return json(res, { results: data.search(q, 30) }, 200, "public, max-age=60");

@@ -3,3 +3,4 @@ pipeline/raw-deputes/
 pipeline/raw-scrutins/
 node_modules/
 *.log
+var/

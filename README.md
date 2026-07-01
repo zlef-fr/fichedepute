@@ -21,7 +21,11 @@ politique n'est ajoutée.
   (`data/`), le client ne fait aucun calcul.
 - `scripts/refresh-data.sh` — retélécharge les données officielles et reconstruit.
 - `server.js` + `lib/` — serveur HTTP Node sans dépendance (API lecture seule + OG cards).
+- `lib/tracker.js` — compteur de vues par page (clés normalisées, persistées sur disque
+  dans `var/views.json` — volume bind-monté pour survivre aux rebuilds).
 - `public/` — PWA vanilla (SPA, i18n FR/EN, thème clair, service worker offline).
+
+Projet **indépendant**, réalisé avec patriotisme 🇫🇷 par [zlef.fr](https://zlef.fr).
 
 ## Dev
 ```bash

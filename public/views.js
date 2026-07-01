@@ -197,6 +197,7 @@ V.fiche = async (root, m) => {
           <div class="fiche-badges">
             ${STD.grpPill(g.sigle, g.libelle, g.color)}
             ${d.rang ? `<span class="chip">${esc(t("fiche.rank", { r: d.rang }))}</span>` : ""}
+            <span class="chip" data-views hidden></span>
           </div>
         </div>
         <button class="btn btn-ghost" id="share">⇪ ${esc(t("fiche.share"))}</button>
