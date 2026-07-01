@@ -1,6 +1,6 @@
 // FicheDéputé.fr — minimal offline shell. Bump CACHE on shell/asset changes.
-const CACHE = "std-v9";
-const SHELL = ["/", "/styles.css?v=9", "/i18n.js?v=9", "/app.js?v=9", "/views.js?v=9", "/site.webmanifest"];
+const CACHE = "std-v10";
+const SHELL = ["/", "/styles.css?v=10", "/i18n.js?v=10", "/app.js?v=10", "/views.js?v=10", "/site.webmanifest"];
 self.addEventListener("install", (e) => { self.skipWaiting(); e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).catch(() => {})); });
 self.addEventListener("activate", (e) => { e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE).map((k) => caches.delete(k))))); self.clients.claim(); });
 self.addEventListener("fetch", (e) => {
