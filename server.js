@@ -6,6 +6,7 @@ const path = require("path");
 const data = require("./lib/data");
 const og = require("./lib/og");
 const tracker = require("./lib/tracker");
+const seo = require("./lib/seo");
 
 const isSlug = (s) => !!data.store.bySlug[s];
 
@@ -31,18 +32,21 @@ function json(res, obj, code = 200, cache = "public, max-age=300") {
   send(res, code, JSON.stringify(obj), { "content-type": MIME[".json"], "cache-control": cache });
 }
 
+function sendShell(res, pathname) {
+  // serve index.html with per-route <head> meta injected for crawlers
+  fs.readFile(path.join(PUB, "index.html"), "utf8", (e, html) =>
+    e ? send(res, 404, "not found")
+      : send(res, 200, seo.injectMeta(html, pathname), { "content-type": MIME[".html"], "cache-control": "no-cache" })
+  );
+}
+
 function serveStatic(req, res, urlPath) {
-  let rel = decodeURIComponent(urlPath.split("?")[0]);
-  if (rel === "/") rel = "/index.html";
-  const file = path.join(PUB, path.normalize(rel).replace(/^(\.\.[/\\])+/, ""));
+  const pathname = decodeURIComponent(urlPath.split("?")[0]);
+  if (pathname === "/") return sendShell(res, "/");
+  const file = path.join(PUB, path.normalize(pathname).replace(/^(\.\.[/\\])+/, ""));
   if (!file.startsWith(PUB)) return send(res, 403, "forbidden");
   fs.readFile(file, (err, buf) => {
-    if (err) {
-      // SPA fallback → index.html (client router handles the route)
-      return fs.readFile(path.join(PUB, "index.html"), (e2, idx) =>
-        e2 ? send(res, 404, "not found") : send(res, 200, idx, { "content-type": MIME[".html"], "cache-control": "no-cache" })
-      );
-    }
+    if (err) return sendShell(res, pathname); // SPA fallback → client router
     const ext = path.extname(file);
     const cache = ext === ".html" ? "no-cache" : "public, max-age=3600";
     send(res, 200, buf, { "content-type": MIME[ext] || "application/octet-stream", "cache-control": cache });
@@ -95,6 +99,14 @@ const server = http.createServer((req, res) => {
       return f ? json(res, f) : json(res, { error: "not found" }, 404, "no-cache");
     }
     return json(res, { error: "unknown endpoint" }, 404, "no-cache");
+  }
+
+  // ---- SEO: full sitemap (all fiches) + robots (own the .fr canonical) ---
+  if (url === "/sitemap.xml" || url.startsWith("/sitemap.xml?")) {
+    return send(res, 200, seo.sitemap(), { "content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600" });
+  }
+  if (url === "/robots.txt") {
+    return send(res, 200, seo.robots(), { "content-type": "text/plain; charset=utf-8", "cache-control": "public, max-age=3600" });
   }
 
   // ---- dynamic OG share image (SVG) --------------------------------------
