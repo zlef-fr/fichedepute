@@ -44,4 +44,11 @@ fi
 
 echo "· rebuilding activity data …"
 python3 pipeline/build_activite.py
+# HATVP declarations (~84 MB XML, both chambers). WITH_HATVP=1 to refresh.
+if [ "${WITH_HATVP:-0}" = "1" ]; then
+  echo "· downloading HATVP declarations …"
+  mkdir -p pipeline/raw-hatvp
+  curl -fsSL --http1.1 -o pipeline/raw-hatvp/declarations.xml "https://www.hatvp.fr/livraison/merge/declarations.xml"
+  python3 pipeline/build_hatvp.py   # writes hatvp.json into BOTH fichedepute + fichesenat data/
+fi
 echo "✓ data refreshed"

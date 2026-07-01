@@ -6,3 +6,4 @@ node_modules/
 var/
 pipeline/raw-questions/
 pipeline/raw-amendements/
+pipeline/raw-hatvp/

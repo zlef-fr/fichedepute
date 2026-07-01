@@ -248,6 +248,20 @@ V.fiche = async (root, m) => {
             ${d.hasAmendements ? `<div class="act"><b>${d.activite.amendements}</b><span>${esc(t("fiche.activite.amdt"))}</span><em>${esc(t("fiche.activite.amdtAdopt", { n: d.activite.amendementsAdoptes }))}</em></div>` : ""}
           </div>
         </div>` : ""}
+        ${d.hatvpDecl ? `<div class="card side-card">
+          <h3>⚖ ${esc(t("fiche.hatvp"))}</h3>
+          <div class="act-grid">
+            <div class="act"><b>${d.hatvpDecl.activitesProf}</b><span>${esc(t("hatvp.activites"))}</span></div>
+            <div class="act"><b>${d.hatvpDecl.participationsFinancieres}</b><span>${esc(t("hatvp.finance"))}</span></div>
+            <div class="act"><b>${d.hatvpDecl.participationsDirigeant}</b><span>${esc(t("hatvp.dirigeant"))}</span></div>
+          </div>
+          ${(d.hatvpDecl.consultant || d.hatvpDecl.benevole || d.hatvpDecl.activiteConjoint) ? `<div class="hatvp-flags">
+            ${d.hatvpDecl.consultant ? `<span class="chip">${esc(t("hatvp.consultant"))}</span>` : ""}
+            ${d.hatvpDecl.benevole ? `<span class="chip">${esc(t("hatvp.benevole"))}</span>` : ""}
+            ${d.hatvpDecl.activiteConjoint ? `<span class="chip">${esc(t("hatvp.conjoint"))}</span>` : ""}
+          </div>` : ""}
+          <a class="salary-src" href="${esc(d.hatvp || d.hatvpDecl.url)}" target="_blank" rel="noopener">${esc(t("hatvp.voir"))} ↗</a>
+        </div>` : ""}
         ${indem && indem.brutMensuel ? `<div class="card side-card salary-card">
           <h3>💶 ${esc(t("fiche.salary"))}</h3>
           <div class="salary-amount">${esc(eur(indem.brutMensuel))}<span class="salary-unit"> ${esc(t("fiche.salary.brut"))}</span></div>
