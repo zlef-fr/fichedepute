@@ -297,10 +297,14 @@ V.rankings = async (root) => {
   </div></section>`;
 };
 
-// ── GAME · Devine le député ───────────────────────────────────────────────
+// ── GAME · Devine le député (normal = 4 choix · expert = saisie libre) ─────
 V.game = async (root) => {
   setMeta(t("game.title") + " — FicheDéputé.fr", t("game.lead"), "https://fichedepute.fr/jeu");
-  let best = parseInt(localStorage.getItem("fd_game_best") || "0", 10) || 0;
+  const MODES = ["normal", "expert"];
+  let mode = MODES.includes(localStorage.getItem("fd_game_mode")) ? localStorage.getItem("fd_game_mode") : "normal";
+  const bestKey = () => "fd_game_best_" + mode;
+  const loadBest = () => parseInt(localStorage.getItem(bestKey()) || "0", 10) || 0;
+  let best = loadBest();
   let streak = 0;
 
   root.innerHTML = `<section class="block fade-in"><div class="wrap">
@@ -314,14 +318,114 @@ V.game = async (root) => {
         <div class="gsc"><b id="g-best">${best}</b><span>${esc(t("game.best"))}</span></div>
       </div>
     </div>
+    <div class="game-mode" role="tablist">
+      ${MODES.map((mo) => `<button class="gm-btn${mo === mode ? " active" : ""}" data-mode="${mo}">
+        <b>${esc(t("game.mode." + mo))}</b><span>${esc(t("game.mode." + mo + ".hint"))}</span></button>`).join("")}
+    </div>
     <div id="g-card"></div>
   </div></section>`;
 
   const card = root.querySelector("#g-card");
   const elStreak = root.querySelector("#g-streak"), elBest = root.querySelector("#g-best");
 
+  root.querySelectorAll(".gm-btn").forEach((btn) => btn.addEventListener("click", () => {
+    if (btn.dataset.mode === mode) return;
+    mode = btn.dataset.mode;
+    localStorage.setItem("fd_game_mode", mode);
+    root.querySelectorAll(".gm-btn").forEach((b) => b.classList.toggle("active", b.dataset.mode === mode));
+    streak = 0; elStreak.textContent = "0";
+    best = loadBest(); elBest.textContent = best;
+    loadRound();
+  }));
+
   const voteList = (arr, kind) => `<ul class="g-votes ${kind}">${arr.map((v) =>
     `<li><span class="g-tick">${kind === "yes" ? "✓" : "✕"}</span><span>${esc(v.titre || "Scrutin")}</span></li>`).join("")}</ul>`;
+
+  // shared post-answer handling: score, persist best, render the result banner
+  function settle(r, correct, result) {
+    const answer = r.choices.find((c) => c.uid === r.answer);
+    const answerName = `${answer.prenom} ${answer.nom}`;
+    streak = correct ? streak + 1 : 0;
+    elStreak.textContent = streak;
+    if (streak > best) { best = streak; localStorage.setItem(bestKey(), String(best)); elBest.textContent = best; }
+    result.hidden = false;
+    result.className = "g-result " + (correct ? "ok" : "ko");
+    result.innerHTML = `<span class="g-verdict">${correct ? "✅ " + esc(t("game.correct", { name: answerName })) : "❌ " + esc(t("game.wrong", { name: answerName }))}</span>
+      <div class="g-actions">
+        <a class="btn btn-ghost" href="/depute/${esc(r.answerSlug)}" data-link>${esc(t("game.seefiche"))}</a>
+        <button class="btn btn-primary" id="g-next">${esc(t("game.next"))}</button>
+      </div>`;
+    result.querySelector("#g-next").addEventListener("click", loadRound);
+    result.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  // NORMAL: 4 clickable choices
+  function renderNormal(pick, r, result) {
+    pick.innerHTML = `<h3>${esc(t("game.pick"))}</h3>
+      <div class="g-choices">${r.choices.map((c) => `
+        <button class="g-choice" data-uid="${esc(c.uid)}">
+          ${STD.avatar(c)}
+          <span class="g-cinfo">
+            <span class="g-cname">${esc(c.prenom)} ${esc(c.nom)}</span>
+            <span class="g-cmeta">${esc(c.groupe)}${c.depNom ? " · " + esc(c.depNom) : ""}</span>
+          </span>
+        </button>`).join("")}</div>`;
+    const buttons = [...pick.querySelectorAll(".g-choice")];
+    let answered = false;
+    buttons.forEach((btn) => btn.addEventListener("click", () => {
+      if (answered) return; answered = true;
+      const correct = btn.dataset.uid === r.answer;
+      buttons.forEach((b) => {
+        b.disabled = true;
+        if (b.dataset.uid === r.answer) b.classList.add("is-right");
+        else if (b === btn) b.classList.add("is-wrong");
+      });
+      settle(r, correct, result);
+    }));
+  }
+
+  // EXPERT: free-text autocomplete over all 577 MPs
+  function renderExpert(pick, r, result) {
+    pick.innerHTML = `<h3>${esc(t("game.pick"))}</h3>
+      <div class="g-expert">
+        <span class="ico">⌕</span>
+        <input id="g-guess" type="search" autocomplete="off" placeholder="${esc(t("game.expert.placeholder"))}" aria-label="${esc(t("game.expert.placeholder"))}">
+        <div class="g-suggest" hidden></div>
+      </div>`;
+    const input = pick.querySelector("#g-guess");
+    const box = pick.querySelector(".g-suggest");
+    let timer, active = -1, answered = false;
+    const close = () => { box.hidden = true; box.innerHTML = ""; active = -1; };
+    const guess = (uid) => {
+      if (answered) return; answered = true;
+      input.disabled = true; close();
+      settle(r, uid === r.answer, result);
+    };
+    input.addEventListener("input", () => {
+      clearTimeout(timer);
+      const q = input.value.trim();
+      if (q.length < 2) return close();
+      timer = setTimeout(async () => {
+        const { results } = await STD.getJSON("/api/search?q=" + encodeURIComponent(q));
+        if (answered) return;
+        if (!results.length) { box.innerHTML = `<div class="sr-none">${esc(t("search.none"))}</div>`; box.hidden = false; return; }
+        box.innerHTML = results.map((d) => `<button class="g-sug" data-uid="${esc(d.uid)}">
+          ${STD.avatar(d)}<span class="g-cname">${esc(d.prenom)} ${esc(d.nom)}</span>
+          <span class="g-cmeta">${esc(d.groupe)}${d.depNom ? " · " + esc(d.depNom) : ""}</span></button>`).join("");
+        box.hidden = false; active = -1;
+        box.querySelectorAll(".g-sug").forEach((b) => b.addEventListener("click", () => guess(b.dataset.uid)));
+      }, 160);
+    });
+    input.addEventListener("keydown", (e) => {
+      const sug = [...box.querySelectorAll(".g-sug")];
+      if (e.key === "ArrowDown") { e.preventDefault(); active = Math.min(active + 1, sug.length - 1); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); active = Math.max(active - 1, 0); }
+      else if (e.key === "Enter") { e.preventDefault(); if (sug[active]) sug[active].click(); else if (sug.length === 1) sug[0].click(); return; }
+      else if (e.key === "Escape") return close();
+      sug.forEach((l, i) => l.classList.toggle("sug-active", i === active));
+    });
+    requestAnimationFrame(() => input.focus());
+  }
 
   async function loadRound() {
     card.innerHTML = `<div class="spinner"></div>`;
@@ -338,47 +442,12 @@ V.game = async (root) => {
           <div class="g-votecol"><h4 class="g-no">${esc(t("game.no"))}</h4>${voteList(r.clue.contre, "no")}</div>
         </div>
       </div>
-      <div class="g-pick"><h3>${esc(t("game.pick"))}</h3>
-        <div class="g-choices">${r.choices.map((c) => `
-          <button class="g-choice" data-uid="${esc(c.uid)}" data-slug="${esc(c.slug)}">
-            ${STD.avatar(c)}
-            <span class="g-cinfo">
-              <span class="g-cname">${esc(c.prenom)} ${esc(c.nom)}</span>
-              <span class="g-cmeta">${esc(c.groupe)}${c.depNom ? " · " + esc(c.depNom) : ""}</span>
-            </span>
-          </button>`).join("")}</div>
-      </div>
+      <div class="g-pick"></div>
       <div class="g-result" hidden></div>
     </div>`;
-
-    const buttons = [...card.querySelectorAll(".g-choice")];
+    const pick = card.querySelector(".g-pick");
     const result = card.querySelector(".g-result");
-    let answered = false;
-    buttons.forEach((btn) => btn.addEventListener("click", () => {
-      if (answered) return;
-      answered = true;
-      const picked = btn.dataset.uid;
-      const correct = picked === r.answer;
-      const answer = r.choices.find((c) => c.uid === r.answer);
-      const answerName = `${answer.prenom} ${answer.nom}`;
-      buttons.forEach((b) => {
-        b.disabled = true;
-        if (b.dataset.uid === r.answer) b.classList.add("is-right");
-        else if (b === btn) b.classList.add("is-wrong");
-      });
-      streak = correct ? streak + 1 : 0;
-      elStreak.textContent = streak;
-      if (streak > best) { best = streak; localStorage.setItem("fd_game_best", String(best)); elBest.textContent = best; }
-      result.hidden = false;
-      result.className = "g-result " + (correct ? "ok" : "ko");
-      result.innerHTML = `<span class="g-verdict">${correct ? "✅ " + esc(t("game.correct", { name: answerName })) : "❌ " + esc(t("game.wrong", { name: answerName }))}</span>
-        <div class="g-actions">
-          <a class="btn btn-ghost" href="/depute/${esc(r.answerSlug)}" data-link>${esc(t("game.seefiche"))}</a>
-          <button class="btn btn-primary" id="g-next">${esc(t("game.next"))}</button>
-        </div>`;
-      result.querySelector("#g-next").addEventListener("click", loadRound);
-      result.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    }));
+    (mode === "expert" ? renderExpert : renderNormal)(pick, r, result);
   }
   loadRound();
 };

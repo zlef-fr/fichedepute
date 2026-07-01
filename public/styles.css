@@ -255,7 +255,27 @@ footer.foot .fi { display: flex; justify-content: space-between; gap: 16px; flex
 .gsc b { display: block; font-size: 26px; font-weight: 850; color: var(--bleu); letter-spacing: -1px; }
 .gsc span { font-size: 12px; color: var(--muted); font-weight: 600; }
 
+.game-mode { display: inline-flex; gap: 4px; padding: 4px; background: var(--bg-2); border: 1px solid var(--line); border-radius: 14px; margin-bottom: 20px; }
+.gm-btn { display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 8px 20px; border: none; border-radius: 10px; background: transparent; color: var(--ink-2); transition: background .16s, box-shadow .16s, color .16s; }
+.gm-btn b { font-size: 14.5px; font-weight: 700; }
+.gm-btn span { font-size: 11.5px; color: var(--muted); }
+.gm-btn.active { background: #fff; box-shadow: var(--shadow-sm); color: var(--bleu); }
+.gm-btn.active span { color: var(--ink-2); }
+
 .game-card { background: var(--card); border: 1px solid var(--line); border-radius: 20px; box-shadow: var(--shadow); padding: 26px; }
+
+/* expert free-text autocomplete */
+.g-expert { position: relative; max-width: 560px; }
+.g-expert .ico { position: absolute; left: 16px; top: 15px; color: var(--faint); font-size: 18px; }
+.g-expert input { width: 100%; font-size: 16px; padding: 14px 18px 14px 46px; border-radius: 12px; border: 1.5px solid var(--line-2); background: #fff; color: var(--ink); transition: border-color .16s, box-shadow .16s; }
+.g-expert input:focus { outline: none; border-color: var(--bleu); box-shadow: 0 0 0 4px var(--bleu-soft); }
+.g-expert input:disabled { background: var(--bg-2); }
+.g-suggest { position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow-lg); overflow: hidden; z-index: 20; max-height: 320px; overflow-y: auto; }
+.g-sug { display: flex; align-items: center; gap: 11px; width: 100%; text-align: left; padding: 10px 14px; border: none; background: #fff; border-bottom: 1px solid var(--line); }
+.g-sug:last-child { border-bottom: none; }
+.g-sug:hover, .g-sug.sug-active { background: var(--bg-2); }
+.g-sug .g-cname { font-weight: 700; font-size: 14.5px; }
+.g-sug .g-cmeta { color: var(--muted); font-size: 12.5px; margin-left: auto; white-space: nowrap; }
 .g-clues { display: flex; gap: 26px; align-items: center; flex-wrap: wrap; padding-bottom: 22px; border-bottom: 1px solid var(--line); }
 .g-gauge { flex: none; }
 .g-votecols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; flex: 1; min-width: 260px; }
