@@ -239,3 +239,31 @@ footer.foot .fi { display: flex; justify-content: space-between; gap: 16px; flex
   .fiche-cols { grid-template-columns: 1fr; }
   .votes-split { grid-template-columns: 1fr 1fr 1fr; }
 }
+
+/* ── Fiche hero + score widget on phones ────────────────────────────────── */
+@media (max-width: 560px) {
+  .fiche-hero { padding: 22px 16px; border-radius: 18px; }
+  .fiche-top { flex-direction: column; align-items: center; text-align: center; gap: 12px; }
+  .fiche-top .id { min-width: 0; width: 100%; }
+  .fiche-top h1 { font-size: 27px; }
+  .fiche-badges { justify-content: center; }
+  .avatar.lg { width: 78px; height: 78px; font-size: 26px; }
+  .fiche-top #share { width: 100%; justify-content: center; margin-top: 2px; }
+
+  /* score widget: ring stacked over the vote breakdown, tight and centered */
+  .gauges { grid-template-columns: 1fr; gap: 14px; margin-top: 20px;
+            background: var(--bg); border: 1px solid var(--line); border-radius: 16px; padding: 20px 16px; }
+  .ring { width: 148px; height: 148px; }
+  .ring svg { width: 148px; height: 148px; }
+  .ring .rv b { font-size: 30px; }
+  .gauge .gl { font-size: 15px; }
+  .votes-split { gap: 10px; margin-top: 2px; }
+  .vsplit { padding: 13px 6px; border-radius: 12px; }
+  .vsplit b { font-size: 24px; }
+  .vsplit span { font-size: 12px; }
+
+  .vote-pos { width: 100%; }
+  .vote-item { flex-direction: column; gap: 7px; padding: 14px 0; }
+  .panel { padding: 18px; }
+  .prose { padding: 22px 18px; }
+}
