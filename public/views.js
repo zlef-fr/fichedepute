@@ -167,8 +167,12 @@ V.list = async (root) => {
 // ── FICHE ─────────────────────────────────────────────────────────────────
 V.fiche = async (root, m) => {
   const slug = decodeURIComponent(m[1]);
-  const d = await STD.getJSON("/api/depute/" + encodeURIComponent(slug));
+  const [d, indem] = await Promise.all([
+    STD.getJSON("/api/depute/" + encodeURIComponent(slug)),
+    STD.getJSON("/api/indemnite").catch(() => null),
+  ]);
   const g = d.groupe || { sigle: "NI", color: "#8a8f98", libelle: "Non inscrit" };
+  const eur = (n) => n.toLocaleString(STD.lang, { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
   const name = `${d.prenom} ${d.nom}`;
   setMeta(`${name} — FicheDéputé.fr`,
     `${name} (${g.sigle}) : ${d.presenceRate}% de participation aux scrutins publics. ${d.nPresent} scrutins sur ${d.nEligible}.`,
@@ -235,6 +239,16 @@ V.fiche = async (root, m) => {
           ${d.profession ? `<div class="kv"><span class="k">${esc(t("fiche.profession"))}</span><span class="v">${esc(d.profession)}</span></div>` : ""}
           <div class="kv"><span class="k">${esc(t("fiche.ballots"))}</span><span class="v">${d.nPresent} / ${d.nEligible}</span></div>
         </div>
+        ${indem && indem.brutMensuel ? `<div class="card side-card salary-card">
+          <h3>💶 ${esc(t("fiche.salary"))}</h3>
+          <div class="salary-amount">${esc(eur(indem.brutMensuel))}<span class="salary-unit"> ${esc(t("fiche.salary.brut"))}</span></div>
+          <div class="salary-net">${esc(t("fiche.salary.net", { v: eur(indem.netMensuel) }))}</div>
+          <div class="salary-breakdown">
+            ${(indem.composition || []).map((c) => `<div class="kv"><span class="k">${esc(c.libelle)}</span><span class="v">${esc(eur(c.montant))}</span></div>`).join("")}
+          </div>
+          <div class="salary-note">${esc(t("fiche.salary.same"))}</div>
+          <a class="salary-src" href="${esc(indem.source)}" target="_blank" rel="noopener">${esc(t("fiche.salary.source"))} ↗</a>
+        </div>` : ""}
         <div class="card side-card">
           <h3>${esc(t("fiche.contact"))}</h3>
           <div class="link-row">
@@ -281,6 +295,92 @@ V.rankings = async (root) => {
     </div>
     ${tbl(t("rank.actifs"), stats.plusActifs, "participation")}
   </div></section>`;
+};
+
+// ── GAME · Devine le député ───────────────────────────────────────────────
+V.game = async (root) => {
+  setMeta(t("game.title") + " — FicheDéputé.fr", t("game.lead"), "https://fichedepute.fr/jeu");
+  let best = parseInt(localStorage.getItem("fd_game_best") || "0", 10) || 0;
+  let streak = 0;
+
+  root.innerHTML = `<section class="block fade-in"><div class="wrap">
+    <div class="game-head">
+      <div>
+        <h2 class="game-title">🕵️ ${esc(t("game.title"))}</h2>
+        <p class="game-lead">${esc(t("game.lead"))}</p>
+      </div>
+      <div class="game-score">
+        <div class="gsc"><b id="g-streak">0</b><span>${esc(t("game.streak"))}</span></div>
+        <div class="gsc"><b id="g-best">${best}</b><span>${esc(t("game.best"))}</span></div>
+      </div>
+    </div>
+    <div id="g-card"></div>
+  </div></section>`;
+
+  const card = root.querySelector("#g-card");
+  const elStreak = root.querySelector("#g-streak"), elBest = root.querySelector("#g-best");
+
+  const voteList = (arr, kind) => `<ul class="g-votes ${kind}">${arr.map((v) =>
+    `<li><span class="g-tick">${kind === "yes" ? "✓" : "✕"}</span><span>${esc(v.titre || "Scrutin")}</span></li>`).join("")}</ul>`;
+
+  async function loadRound() {
+    card.innerHTML = `<div class="spinner"></div>`;
+    let r;
+    try { r = await STD.getJSON("/api/game/round?_=" + Date.now()); }
+    catch { card.innerHTML = `<p class="sr-none">${esc(t("search.none"))}</p>`; return; }
+    // getJSON caches by URL; the _=Date.now() busts it so each round is fresh
+    const presColor = STD.presenceColor(r.clue.presence);
+    card.innerHTML = `<div class="game-card fade-in">
+      <div class="g-clues">
+        <div class="g-gauge">${STD.ring(r.clue.presence, presColor, t("game.presence"), "")}</div>
+        <div class="g-votecols">
+          <div class="g-votecol"><h4 class="g-yes">${esc(t("game.yes"))}</h4>${voteList(r.clue.pour, "yes")}</div>
+          <div class="g-votecol"><h4 class="g-no">${esc(t("game.no"))}</h4>${voteList(r.clue.contre, "no")}</div>
+        </div>
+      </div>
+      <div class="g-pick"><h3>${esc(t("game.pick"))}</h3>
+        <div class="g-choices">${r.choices.map((c) => `
+          <button class="g-choice" data-uid="${esc(c.uid)}" data-slug="${esc(c.slug)}">
+            ${STD.avatar(c)}
+            <span class="g-cinfo">
+              <span class="g-cname">${esc(c.prenom)} ${esc(c.nom)}</span>
+              <span class="g-cmeta">${esc(c.groupe)}${c.depNom ? " · " + esc(c.depNom) : ""}</span>
+            </span>
+          </button>`).join("")}</div>
+      </div>
+      <div class="g-result" hidden></div>
+    </div>`;
+
+    const buttons = [...card.querySelectorAll(".g-choice")];
+    const result = card.querySelector(".g-result");
+    let answered = false;
+    buttons.forEach((btn) => btn.addEventListener("click", () => {
+      if (answered) return;
+      answered = true;
+      const picked = btn.dataset.uid;
+      const correct = picked === r.answer;
+      const answer = r.choices.find((c) => c.uid === r.answer);
+      const answerName = `${answer.prenom} ${answer.nom}`;
+      buttons.forEach((b) => {
+        b.disabled = true;
+        if (b.dataset.uid === r.answer) b.classList.add("is-right");
+        else if (b === btn) b.classList.add("is-wrong");
+      });
+      streak = correct ? streak + 1 : 0;
+      elStreak.textContent = streak;
+      if (streak > best) { best = streak; localStorage.setItem("fd_game_best", String(best)); elBest.textContent = best; }
+      result.hidden = false;
+      result.className = "g-result " + (correct ? "ok" : "ko");
+      result.innerHTML = `<span class="g-verdict">${correct ? "✅ " + esc(t("game.correct", { name: answerName })) : "❌ " + esc(t("game.wrong", { name: answerName }))}</span>
+        <div class="g-actions">
+          <a class="btn btn-ghost" href="/depute/${esc(r.answerSlug)}" data-link>${esc(t("game.seefiche"))}</a>
+          <button class="btn btn-primary" id="g-next">${esc(t("game.next"))}</button>
+        </div>`;
+      result.querySelector("#g-next").addEventListener("click", loadRound);
+      result.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }));
+  }
+  loadRound();
 };
 
 // ── GROUPS ────────────────────────────────────────────────────────────────

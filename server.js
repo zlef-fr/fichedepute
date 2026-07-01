@@ -62,6 +62,11 @@ const server = http.createServer((req, res) => {
     if (p === "/api/stats") return json(res, data.store.stats);
     if (p === "/api/scrutins") return json(res, { scrutins: data.store.scrutins });
     if (p === "/api/meta") return json(res, data.store.meta);
+    if (p === "/api/indemnite") return json(res, data.store.indemnite || {}, 200, "public, max-age=86400");
+    if (p === "/api/game/round") {
+      const round = data.gameRound();
+      return round ? json(res, round, 200, "no-cache") : json(res, { error: "no pool" }, 503, "no-cache");
+    }
     // per-page view counter — POST {path} increments, GET reads (no count)
     if (p === "/api/view") {
       if (req.method === "POST") {

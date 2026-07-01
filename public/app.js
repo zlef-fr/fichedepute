@@ -75,6 +75,7 @@ const routes = [
   { re: /^\/depute\/([^/]+)\/?$/, view: "fiche" },
   { re: /^\/classements\/?$/, view: "rankings" },
   { re: /^\/groupes\/?$/, view: "groups" },
+  { re: /^\/jeu\/?$/, view: "game" },
   { re: /^\/methode\/?$/, view: "methodo" },
 ];
 STD.go = (path, replace) => {

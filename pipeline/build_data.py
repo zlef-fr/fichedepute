@@ -209,6 +209,7 @@ def pct(n, d):
     return round(100.0 * n / d, 1) if d else 0.0
 
 light_list = []
+game_pool = []   # deputies usable in the "Devine le député" game
 for d in deputes.values():
     g = groups.get(d["groupeUid"]) or {"sigle": "NI", "libelle": "Non inscrit", "color": "#8a8f98"}
     d["presenceRate"] = pct(d["nPresent"], d["nEligible"])
@@ -235,6 +236,18 @@ for d in deputes.values():
         "presence": d["presenceRate"], "participation": d["participationRate"],
         "nPresent": d["nPresent"], "nEligible": d["nEligible"],
     })
+
+    # game pool: need ≥3 recent "pour" and ≥3 recent "contre", a real group, enough activity
+    pour3 = [{"titre": v["titre"], "date": v["date"]} for v in d["votes"] if v["position"] == "pour"][:3]
+    contre3 = [{"titre": v["titre"], "date": v["date"]} for v in d["votes"] if v["position"] == "contre"][:3]
+    if len(pour3) == 3 and len(contre3) == 3 and d["nPresent"] >= 20 and g["sigle"] != "NI":
+        game_pool.append({
+            "uid": d["uid"], "slug": d["slug"], "prenom": d["prenom"], "nom": d["nom"],
+            "groupe": g["sigle"], "groupeColor": g["color"], "groupeLibelle": g["libelle"],
+            "dep": (d["circo"] or {}).get("numDepartement"),
+            "depNom": (d["circo"] or {}).get("departement"),
+            "presence": d["presenceRate"], "pour": pour3, "contre": contre3,
+        })
 
 light_list.sort(key=lambda x: (x["nom"] or "", x["prenom"] or ""))
 json.dump({"generatedAt": datetime.date.today().isoformat(),
@@ -280,5 +293,9 @@ json.dump({"scrutins": list(reversed(scrutins_meta[-40:]))},
           open(os.path.join(OUT, "scrutins.json"), "w"),
           ensure_ascii=False, separators=(",", ":"))
 
-print("✓ %d députés, %d scrutins, %d groupes → %s" %
-      (len(light_list), total_scrutins, len(groupes_out), OUT), file=sys.stderr)
+# "Devine le député" game pool
+json.dump({"deputes": game_pool}, open(os.path.join(OUT, "game.json"), "w"),
+          ensure_ascii=False, separators=(",", ":"))
+
+print("✓ %d députés, %d scrutins, %d groupes, %d jouables → %s" %
+      (len(light_list), total_scrutins, len(groupes_out), len(game_pool), OUT), file=sys.stderr)

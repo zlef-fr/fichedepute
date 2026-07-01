@@ -1,0 +1,16 @@
+{
+  "asOf": "2025",
+  "source": "https://www.assemblee-nationale.fr/dyn/synthese/deputes-groupes-parlementaires/la-situation-materielle-du-depute",
+  "note": "Indemnité identique pour les 577 députés (hors suppléments de fonction : président, vice-présidents, questeurs, présidents de commission).",
+  "brutMensuel": 7637.39,
+  "netMensuel": 5953.34,
+  "composition": [
+    { "libelle": "Indemnité de base", "montant": 5931.95 },
+    { "libelle": "Indemnité de résidence", "montant": 177.96 },
+    { "libelle": "Indemnité de fonction", "montant": 1527.48 }
+  ],
+  "moyens": [
+    { "libelle": "Avance de frais de mandat (métropole)", "montant": 6353 },
+    { "libelle": "Crédit collaborateurs (jusqu'à 5 personnes)", "montant": 11118 }
+  ]
+}

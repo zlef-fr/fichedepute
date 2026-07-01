@@ -236,6 +236,56 @@ footer.foot .fi { display: flex; justify-content: space-between; gap: 16px; flex
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 12px 22px; border-radius: 12px; font-weight: 600; font-size: 14px; box-shadow: var(--shadow-lg); opacity: 0; transition: all .3s; z-index: 100; pointer-events: none; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+/* ── Salary card ────────────────────────────────────────────────────────── */
+.salary-card .salary-amount { font-size: 28px; font-weight: 850; color: var(--bleu); letter-spacing: -1px; margin-top: 2px; }
+.salary-card .salary-unit { font-size: 14px; font-weight: 600; color: var(--muted); letter-spacing: 0; }
+.salary-card .salary-net { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+.salary-card .salary-breakdown { border-top: 1px solid var(--line); padding-top: 6px; }
+.salary-card .salary-breakdown .kv { font-size: 13px; }
+.salary-card .salary-note { font-size: 12px; color: var(--muted); margin-top: 10px; font-style: italic; }
+.salary-card .salary-src { display: inline-block; margin-top: 8px; font-size: 12.5px; font-weight: 600; }
+
+/* ── Game · Devine le député ────────────────────────────────────────────── */
+.nav-game { position: relative; }
+.game-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 22px; }
+.game-title { font-size: 26px; font-weight: 850; letter-spacing: -.6px; }
+.game-lead { color: var(--ink-2); font-size: 15.5px; margin-top: 6px; max-width: 60ch; }
+.game-score { display: flex; gap: 10px; }
+.gsc { background: var(--card); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow-sm); padding: 12px 18px; text-align: center; min-width: 74px; }
+.gsc b { display: block; font-size: 26px; font-weight: 850; color: var(--bleu); letter-spacing: -1px; }
+.gsc span { font-size: 12px; color: var(--muted); font-weight: 600; }
+
+.game-card { background: var(--card); border: 1px solid var(--line); border-radius: 20px; box-shadow: var(--shadow); padding: 26px; }
+.g-clues { display: flex; gap: 26px; align-items: center; flex-wrap: wrap; padding-bottom: 22px; border-bottom: 1px solid var(--line); }
+.g-gauge { flex: none; }
+.g-votecols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; flex: 1; min-width: 260px; }
+.g-votecol h4 { font-size: 12.5px; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
+.g-votecol h4.g-yes { color: var(--ok); }
+.g-votecol h4.g-no { color: var(--rouge); }
+.g-votes { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.g-votes li { display: flex; gap: 8px; font-size: 13.5px; color: var(--ink-2); line-height: 1.35; align-items: flex-start; }
+.g-tick { flex: none; font-weight: 800; }
+.g-votes.yes .g-tick { color: var(--ok); }
+.g-votes.no .g-tick { color: var(--rouge); }
+
+.g-pick { margin-top: 22px; }
+.g-pick h3 { font-size: 17px; font-weight: 800; margin-bottom: 14px; }
+.g-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.g-choice { display: flex; align-items: center; gap: 12px; text-align: left; padding: 12px 14px; border-radius: 14px; border: 1.5px solid var(--line-2); background: #fff; transition: transform .12s, box-shadow .16s, border-color .16s, background .16s; min-width: 0; }
+.g-choice:not(:disabled):hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--bleu); }
+.g-cinfo { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+.g-choice .g-cname { font-weight: 750; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.g-choice .g-cmeta { color: var(--muted); font-size: 12.5px; margin-left: auto; white-space: nowrap; flex: none; }
+.g-choice:disabled { cursor: default; opacity: .85; }
+.g-choice.is-right { border-color: var(--ok); background: #e9f7ee; opacity: 1; }
+.g-choice.is-wrong { border-color: var(--rouge); background: var(--rouge-soft); opacity: 1; }
+
+.g-result { margin-top: 20px; padding: 16px 18px; border-radius: 14px; }
+.g-result.ok { background: #e9f7ee; border: 1px solid #b7e4c7; }
+.g-result.ko { background: var(--rouge-soft); border: 1px solid #ffc9c9; }
+.g-verdict { font-weight: 700; font-size: 15.5px; }
+.g-actions { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+
 /* ── Responsive ─────────────────────────────────────────────────────────── */
 @media (max-width: 780px) {
   nav.main { display: none; position: absolute; top: 62px; left: 0; right: 0; flex-direction: column; background: #fff; border-bottom: 1px solid var(--line); padding: 8px; gap: 2px; box-shadow: var(--shadow); }
@@ -274,4 +324,13 @@ footer.foot .fi { display: flex; justify-content: space-between; gap: 16px; flex
   .vote-item { flex-direction: column; gap: 7px; padding: 14px 0; }
   .panel { padding: 18px; }
   .prose { padding: 22px 18px; }
+
+  .game-card { padding: 18px; }
+  .g-clues { flex-direction: column; align-items: stretch; gap: 16px; }
+  .g-gauge { align-self: center; }
+  .g-votecols { grid-template-columns: 1fr; gap: 16px; }
+  .g-choices { grid-template-columns: 1fr; }
+  .g-cinfo { flex-direction: column; align-items: flex-start; gap: 1px; }
+  .g-choice .g-cname { white-space: normal; }
+  .g-choice .g-cmeta { margin-left: 0; }
 }
