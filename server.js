@@ -7,11 +7,21 @@ const data = require("./lib/data");
 const og = require("./lib/og");
 const tracker = require("./lib/tracker");
 const seo = require("./lib/seo");
+const { Resvg } = require("@resvg/resvg-js");
 
 const isSlug = (s) => !!data.store.bySlug[s];
 
 const PORT = process.env.PORT || 10091;
 const PUB = path.join(__dirname, "public");
+const VAR = process.env.VAR_DIR || path.join(__dirname, "var");
+
+// SVG → PNG for social share cards (in-process, no browser)
+function renderPng(svg) {
+  return new Resvg(svg, {
+    fitTo: { mode: "width", value: 1200 },
+    font: { loadSystemFonts: true, defaultFontFamily: "DejaVu Sans" },
+  }).render().asPng();
+}
 
 const MIME = {
   ".html": "text/html; charset=utf-8",
@@ -109,13 +119,29 @@ const server = http.createServer((req, res) => {
     return send(res, 200, seo.robots(), { "content-type": "text/plain; charset=utf-8", "cache-control": "public, max-age=3600" });
   }
 
-  // ---- dynamic OG share image (SVG) --------------------------------------
+  // ---- dynamic OG share image — PNG (rendered on the fly + cached) or SVG -
   if (url.startsWith("/og/")) {
-    const slug = url.slice("/og/".length).replace(/\.svg.*$/, "");
+    const slug = url.slice("/og/".length).replace(/\.(svg|png).*$/, "");
+    const wantPng = /\.png/.test(url);
     const light = data.store.bySlug[slug];
     if (!light) return send(res, 404, "not found");
-    const svg = og.card(light);
-    return send(res, 200, svg, { "content-type": MIME[".svg"], "cache-control": "public, max-age=3600" });
+    if (!wantPng) {
+      return send(res, 200, og.card(light), { "content-type": MIME[".svg"], "cache-control": "public, max-age=3600" });
+    }
+    const dir = path.join(VAR, "og");
+    const file = path.join(dir, slug + ".png");
+    return fs.readFile(file, (err, buf) => {
+      if (!buf) {
+        try {
+          buf = renderPng(og.card(light));
+        } catch (e) {
+          console.error("og png render failed:", e.message);
+          return send(res, 200, og.card(light), { "content-type": MIME[".svg"], "cache-control": "public, max-age=600" });
+        }
+        fs.mkdir(dir, { recursive: true }, () => fs.writeFile(file, buf, () => {}));
+      }
+      send(res, 200, buf, { "content-type": MIME[".png"], "cache-control": "public, max-age=86400" });
+    });
   }
 
   // ---- static -------------------------------------------------------------

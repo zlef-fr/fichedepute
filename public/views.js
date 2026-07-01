@@ -178,7 +178,7 @@ V.fiche = async (root, m) => {
     `${name} (${g.sigle}) : ${d.presenceRate}% de participation aux scrutins publics. ${d.nPresent} scrutins sur ${d.nEligible}.`,
     "https://fichedepute.fr/depute/" + d.slug);
   const ogimg = document.querySelector('meta[property="og:image"]');
-  if (ogimg) ogimg.setAttribute("content", "https://fichedepute.fr/og/" + d.slug + ".svg");
+  if (ogimg) ogimg.setAttribute("content", "https://fichedepute.fr/og/" + d.slug + ".png");
 
   const born = d.dateNaissance ? new Date(d.dateNaissance).toLocaleDateString(STD.lang, { year: "numeric", month: "long", day: "numeric" }) : null;
   const sortTag = (s) => {
