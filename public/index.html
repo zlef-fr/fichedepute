@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<!--zlef-seo-->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>SuisTonDéputé.fr — La fiche vivante de votre député·e</title>
+<meta name="description" content="Participation, votes et absences de votre député à l'Assemblée nationale — en clair et 100 % sourcé depuis les données officielles.">
+<link rel="canonical" href="https://suistondepute.zlef.fr/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SuisTonDéputé.fr">
+<meta property="og:title" content="SuisTonDéputé.fr — La fiche vivante de votre député·e">
+<meta property="og:description" content="Participation, votes et absences de votre député à l'Assemblée nationale, en clair et 100 % sourcé.">
+<meta property="og:url" content="https://suistondepute.zlef.fr/">
+<meta property="og:image" content="https://assets.zlef.fr/og-default.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SuisTonDéputé.fr — La fiche vivante de votre député·e">
+<meta name="twitter:description" content="Participation, votes et absences de votre député à l'Assemblée nationale, en clair et 100 % sourcé.">
+<meta name="twitter:image" content="https://assets.zlef.fr/og-default.png">
+<meta name="theme-color" content="#000091">
+<link rel="icon" href="https://assets.zlef.fr/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="https://assets.zlef.fr/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="https://assets.zlef.fr/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<!--/zlef-seo-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;850;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css?v=1">
+</head>
+<body>
+<header class="top"><div class="wrap top-inner">
+  <a class="brand" href="/" data-link>
+    <span class="flag"><i></i><i></i><i></i></span>
+    Suis<b>Ton</b>Député<span style="color:var(--rouge)">.fr</span>
+  </a>
+  <button class="menu-btn" aria-label="Menu">☰</button>
+  <nav class="main">
+    <a href="/deputes" data-link data-view="list" data-i18n="nav.deputes">Députés</a>
+    <a href="/classements" data-link data-view="rankings" data-i18n="nav.classements">Classements</a>
+    <a href="/groupes" data-link data-view="groups" data-i18n="nav.groupes">Groupes</a>
+    <a href="/methode" data-link data-view="methodo" data-i18n="nav.methodo">Méthode</a>
+  </nav>
+</div></header>
+
+<main id="app"><div class="wrap"><div class="spinner"></div></div></main>
+
+<footer class="foot"><div class="wrap fi">
+  <span data-i18n="footer.data">Données : Assemblée nationale (licence Ouverte). Projet indépendant, non affilié.</span>
+  <span style="opacity:.8">·&nbsp; <a href="https://zlef.fr" style="color:var(--muted)">zlef.fr</a></span>
+</div></footer>
+
+<script src="/i18n.js?v=1"></script>
+<script src="/app.js?v=1"></script>
+<script src="/views.js?v=1"></script>
+<script>
+  document.querySelector(".menu-btn").addEventListener("click", () => document.querySelector("nav.main").classList.toggle("open"));
+  STD.boot();
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js").catch(()=>{});
+</script>
+</body>
+</html>

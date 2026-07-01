@@ -1,0 +1,5 @@
+# heavy raw open-data snapshots — re-fetched via scripts/refresh-data.sh
+pipeline/raw-deputes/
+pipeline/raw-scrutins/
+node_modules/
+*.log
