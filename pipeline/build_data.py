@@ -128,7 +128,7 @@ for f in glob.glob(os.path.join(DEP_DIR, "acteur", "*.json")):
         "twitter": twitter, "facebook": facebook, "email": email, "website": website,
         # vote tallies, filled below
         "nPour": 0, "nContre": 0, "nAbstention": 0, "nNonVotant": 0,
-        "nPresent": 0, "nEligible": 0,
+        "nPresent": 0, "nEligible": 0, "nLoyal": 0, "nGroupExpr": 0,
         "votes": [],   # recent votes (chronological, trimmed later)
     }
 
@@ -169,11 +169,15 @@ for i, f in enumerate(files):
     groupes = (((s.get("ventilationVotes") or {}).get("organe") or {}).get("groupes") or {}).get("groupe")
     for g in as_list(groupes):
         dn = (g.get("vote") or {}).get("decompteNominatif") or {}
+        # collect this group's expressed votes per position, then its majority line
+        by_label = {}
         for key, label in POS.items():
             block = dn.get(key)
-            if not block: continue
-            for v in as_list(block.get("votant")):
-                aref = v.get("acteurRef")
+            by_label[label] = [v.get("acteurRef") for v in as_list(block.get("votant"))] if block else []
+        expressed = {lab: by_label[lab] for lab in ("pour", "contre", "abstention")}
+        majority = max(expressed, key=lambda lab: len(expressed[lab])) if any(expressed.values()) else None
+        for label, arefs in by_label.items():
+            for aref in arefs:
                 d = deputes.get(aref)
                 if not d: continue
                 # only count scrutins on/after the deputy's mandate start
@@ -184,6 +188,10 @@ for i, f in enumerate(files):
                 elif label == "contre": d["nContre"] += 1
                 elif label == "abstention": d["nAbstention"] += 1
                 elif label == "nonVotant": d["nNonVotant"] += 1
+                # group loyalty: did the deputy's expressed vote match the group's majority line?
+                if label in ("pour", "contre", "abstention") and majority is not None:
+                    d["nGroupExpr"] += 1
+                    if label == majority: d["nLoyal"] += 1
                 d["votes"].append({"numero": numero, "date": date, "position": label,
                                    "titre": titre, "sort": sort})
     if i % 1500 == 0:
@@ -216,6 +224,8 @@ for d in deputes.values():
     exprimes = d["nPour"] + d["nContre"] + d["nAbstention"]
     d["participationRate"] = pct(exprimes, d["nEligible"])
     d["nExprimes"] = exprimes
+    # group loyalty rate (null when too few group votes to be meaningful)
+    d["loyaltyRate"] = pct(d["nLoyal"], d["nGroupExpr"]) if d["nGroupExpr"] >= 20 else None
     # recent votes: last 25 chronologically
     d["votes"].sort(key=lambda v: (v["date"] or "", v["numero"] or 0), reverse=True)
     recent = d["votes"][:25]
@@ -235,6 +245,7 @@ for d in deputes.values():
         "circo": (d["circo"] or {}).get("numCirco"),
         "presence": d["presenceRate"], "participation": d["participationRate"],
         "nPresent": d["nPresent"], "nEligible": d["nEligible"],
+        "loyalty": d["loyaltyRate"],
     })
 
     # game pool: need ≥3 recent "pour" and ≥3 recent "contre", a real group, enough activity
@@ -276,6 +287,7 @@ json.dump({"groupes": groupes_out}, open(os.path.join(OUT, "groupes.json"), "w")
 # leaderboards
 def top(key, rev, n=20):
     return sorted(light_list, key=lambda x: x[key], reverse=rev)[:n]
+with_loyalty = [x for x in light_list if x["loyalty"] is not None]
 stats = {
     "totalDeputes": len(light_list),
     "totalScrutins": total_scrutins,
@@ -283,6 +295,8 @@ stats = {
     "plusAssidus": top("presence", True),
     "plusAbsents": top("presence", False),
     "plusActifs": top("participation", True),
+    "plusLoyaux": sorted(with_loyalty, key=lambda x: -x["loyalty"])[:20],
+    "plusFrondeurs": sorted(with_loyalty, key=lambda x: x["loyalty"])[:20],
     "groupesAbsents": sorted(groupes_out, key=lambda a: a["presenceMoyenne"]),
 }
 json.dump(stats, open(os.path.join(OUT, "stats.json"), "w"),

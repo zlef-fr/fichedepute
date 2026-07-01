@@ -209,6 +209,7 @@ V.fiche = async (root, m) => {
 
       <div class="gauges">
         ${STD.ring(d.presenceRate, STD.presenceColor(d.presenceRate), t("fiche.participation"), t("fiche.of", { n: d.nEligible }))}
+        ${d.loyaltyRate != null ? STD.ring(d.loyaltyRate, g.color, t("fiche.loyalty"), t("fiche.loyalty.sub", { g: g.sigle })) : ""}
         <div class="votes-split" style="align-self:center">
           <div class="vsplit pour"><b>${d.nPour}</b><span>${esc(t("fiche.pour"))}</span></div>
           <div class="vsplit contre"><b>${d.nContre}</b><span>${esc(t("fiche.contre"))}</span></div>
@@ -279,13 +280,14 @@ V.fiche = async (root, m) => {
 V.rankings = async (root) => {
   setMeta(t("rank.title") + " — FicheDéputé.fr", t("meta.sub"), "https://fichedepute.fr/classements");
   const stats = await STD.getJSON("/api/stats");
-  const tbl = (title, arr, field) => `
+  // colorMode: "score" → green/amber/red by value; "group" → the deputy's group colour
+  const tbl = (title, arr, field, colorMode = "score") => `
     <div class="panel" style="margin-bottom:20px">
       <h2>${esc(title)}</h2>
       <div>${arr.slice(0, 15).map((d, i) => `<a class="rank-row" href="/depute/${esc(d.slug)}" data-link>
         <span class="pos">${i + 1}</span>${STD.avatar(d)}
         <div class="who"><div class="nm">${esc(d.prenom)} ${esc(d.nom)}</div><div class="sub">${esc(d.groupe)} · ${esc(d.depNom || "")}</div></div>
-        <span class="val" style="color:${STD.presenceColor(d[field])}">${d[field].toFixed(1)}%</span></a>`).join("")}</div>
+        <span class="val" style="color:${colorMode === "group" ? esc(d.groupeColor) : STD.presenceColor(d[field])}">${d[field].toFixed(1)}%</span></a>`).join("")}</div>
     </div>`;
   root.innerHTML = `<section class="block fade-in"><div class="wrap">
     <div class="sec-head"><h2>${esc(t("rank.title"))}</h2></div>
@@ -294,6 +296,10 @@ V.rankings = async (root) => {
       <div>${tbl(t("rank.absents"), stats.plusAbsents, "presence")}</div>
     </div>
     ${tbl(t("rank.actifs"), stats.plusActifs, "participation")}
+    ${(stats.plusFrondeurs && stats.plusFrondeurs.length) ? `<div class="grid-2">
+      <div>${tbl(t("rank.frondeurs"), stats.plusFrondeurs, "loyalty", "group")}</div>
+      <div>${tbl(t("rank.loyaux"), stats.plusLoyaux, "loyalty", "group")}</div>
+    </div>` : ""}
   </div></section>`;
 };
 
