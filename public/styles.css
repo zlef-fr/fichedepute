@@ -236,6 +236,14 @@ footer.foot .fi { display: flex; justify-content: space-between; gap: 16px; flex
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 12px 22px; border-radius: 12px; font-weight: 600; font-size: 14px; box-shadow: var(--shadow-lg); opacity: 0; transition: all .3s; z-index: 100; pointer-events: none; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+/* ── Activity card ──────────────────────────────────────────────────────── */
+.act-grid { display: grid; gap: 10px; }
+.act { display: flex; align-items: baseline; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.act:last-child { border-bottom: none; }
+.act b { font-size: 22px; font-weight: 850; color: var(--bleu); letter-spacing: -.5px; min-width: 44px; }
+.act span { font-size: 13.5px; color: var(--ink-2); }
+.act em { font-size: 12px; color: var(--muted); font-style: normal; margin-left: auto; }
+
 /* ── Salary card ────────────────────────────────────────────────────────── */
 .salary-card .salary-amount { font-size: 28px; font-weight: 850; color: var(--bleu); letter-spacing: -1px; margin-top: 2px; }
 .salary-card .salary-unit { font-size: 14px; font-weight: 600; color: var(--muted); letter-spacing: 0; }

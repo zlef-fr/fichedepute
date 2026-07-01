@@ -240,6 +240,14 @@ V.fiche = async (root, m) => {
           ${d.profession ? `<div class="kv"><span class="k">${esc(t("fiche.profession"))}</span><span class="v">${esc(d.profession)}</span></div>` : ""}
           <div class="kv"><span class="k">${esc(t("fiche.ballots"))}</span><span class="v">${d.nPresent} / ${d.nEligible}</span></div>
         </div>
+        ${d.activite ? `<div class="card side-card">
+          <h3>📝 ${esc(t("fiche.activite"))}</h3>
+          <div class="act-grid">
+            <div class="act"><b>${d.activite.questionsEcrites}</b><span>${esc(t("fiche.activite.qe"))}</span></div>
+            <div class="act"><b>${d.activite.qag}</b><span>${esc(t("fiche.activite.qag"))}</span></div>
+            ${d.hasAmendements ? `<div class="act"><b>${d.activite.amendements}</b><span>${esc(t("fiche.activite.amdt"))}</span><em>${esc(t("fiche.activite.amdtAdopt", { n: d.activite.amendementsAdoptes }))}</em></div>` : ""}
+          </div>
+        </div>` : ""}
         ${indem && indem.brutMensuel ? `<div class="card side-card salary-card">
           <h3>💶 ${esc(t("fiche.salary"))}</h3>
           <div class="salary-amount">${esc(eur(indem.brutMensuel))}<span class="salary-unit"> ${esc(t("fiche.salary.brut"))}</span></div>

@@ -4,3 +4,5 @@ pipeline/raw-scrutins/
 node_modules/
 *.log
 var/
+pipeline/raw-questions/
+pipeline/raw-amendements/
