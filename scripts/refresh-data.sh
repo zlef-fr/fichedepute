@@ -51,4 +51,10 @@ if [ "${WITH_HATVP:-0}" = "1" ]; then
   curl -fsSL --http1.1 -o pipeline/raw-hatvp/declarations.xml "https://www.hatvp.fr/livraison/merge/declarations.xml"
   python3 pipeline/build_hatvp.py   # writes hatvp.json into BOTH fichedepute + fichesenat data/
 fi
+# 2024 election results (Ministère de l'Intérieur, ~150 KB each round) — always fetched
+echo "· downloading 2024 election results …"
+mkdir -p pipeline/raw-elections
+curl -fsSL -o pipeline/raw-elections/circo-t2.csv "https://static.data.gouv.fr/resources/elections-legislatives-des-30-juin-et-7-juillet-2024-resultats-definitifs-du-2nd-tour/20240710-170728/resultats-definitifs-par-circonscription.csv"
+curl -fsSL -o pipeline/raw-elections/circo-t1.csv "https://static.data.gouv.fr/resources/elections-legislatives-des-30-juin-et-7-juillet-2024-resultats-definitifs-du-1er-tour/20240710-171413/resultats-definitifs-par-circonscriptions-legislatives.csv"
+python3 pipeline/build_elections.py
 echo "✓ data refreshed"

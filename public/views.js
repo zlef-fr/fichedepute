@@ -240,6 +240,13 @@ V.fiche = async (root, m) => {
           ${d.profession ? `<div class="kv"><span class="k">${esc(t("fiche.profession"))}</span><span class="v">${esc(d.profession)}</span></div>` : ""}
           <div class="kv"><span class="k">${esc(t("fiche.ballots"))}</span><span class="v">${d.nPresent} / ${d.nEligible}</span></div>
         </div>
+        ${d.election ? `<div class="card side-card">
+          <h3>🗳 ${esc(t("election.title"))}</h3>
+          <div class="salary-amount">${d.election.scoreExprimes != null ? d.election.scoreExprimes + "%" : "—"}<span class="salary-unit"> ${esc(t("election.exprimes"))}</span></div>
+          <div class="salary-net">${esc(t(d.election.tour === 1 ? "election.round1" : "election.round2"))}${d.election.nuance ? " · " + esc(d.election.nuance) : ""}</div>
+          <div class="salary-breakdown"><div class="kv"><span class="k">${esc(t("election.turnout"))}</span><span class="v">${d.election.turnout != null ? d.election.turnout + "%" : "—"}</span></div></div>
+          <a class="salary-src" href="https://www.resultats-elections.interieur.gouv.fr/legislatives2024/" target="_blank" rel="noopener">${esc(t("election.source"))} ↗</a>
+        </div>` : ""}
         ${d.activite ? `<div class="card side-card">
           <h3>📝 ${esc(t("fiche.activite"))}</h3>
           <div class="act-grid">
