@@ -1,4 +1,4 @@
-// SuisTonDéputé.fr — minimal offline shell. Bump CACHE on shell/asset changes.
+// FicheDéputé.fr — minimal offline shell. Bump CACHE on shell/asset changes.
 const CACHE = "std-v2";
 const SHELL = ["/", "/styles.css?v=2", "/i18n.js?v=2", "/app.js?v=2", "/views.js?v=2", "/site.webmanifest"];
 self.addEventListener("install", (e) => { self.skipWaiting(); e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).catch(() => {})); });

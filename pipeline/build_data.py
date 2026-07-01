@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-SuisTonDéputé.fr — data pipeline.
+FicheDéputé.fr — data pipeline.
 Transforms official Assemblée nationale open data (17th legislature) into
 ready-to-serve JSON: light deputy list, full per-deputy "fiche vivante",
 groups, and viral leaderboards. Client does zero computation.

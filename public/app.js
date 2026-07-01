@@ -1,4 +1,4 @@
-// SuisTonDéputé.fr — SPA core: i18n, routing, data fetching, shared helpers.
+// FicheDéputé.fr — SPA core: i18n, routing, data fetching, shared helpers.
 const STD = (window.STD = {});
 
 // ── i18n (2 locales → silent resolve, no picker) ──────────────────────────

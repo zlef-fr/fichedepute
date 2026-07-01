@@ -1,7 +1,7 @@
 services:
-  suistondepute:
+  fichedepute:
     build: .
-    container_name: suistondepute
+    container_name: fichedepute
     restart: unless-stopped
     network_mode: host
     environment:

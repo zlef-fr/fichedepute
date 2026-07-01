@@ -1,9 +1,9 @@
-# SuisTonDéputé.fr
+# FicheDéputé.fr
 
 La **fiche vivante** de chaque député·e de l'Assemblée nationale (17ᵉ législature) —
 participation aux scrutins, votes, absences — en clair et 100 % sourcé.
 
-Live: https://suistondepute.zlef.fr
+Live: https://fichedepute.fr
 
 ## Données
 Construit à partir des jeux **open data officiels de l'Assemblée nationale**

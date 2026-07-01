@@ -1,6 +1,6 @@
 {
-  "name": "SuisTonDéputé.fr",
-  "short_name": "SuisTonDéputé",
+  "name": "FicheDéputé.fr",
+  "short_name": "FicheDéputé",
   "description": "La fiche vivante de votre député·e à l'Assemblée nationale.",
   "start_url": "/",
   "display": "standalone",

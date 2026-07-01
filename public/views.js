@@ -1,4 +1,4 @@
-// SuisTonDéputé.fr — view renderers. All dynamic values pass through STD.esc().
+// FicheDéputé.fr — view renderers. All dynamic values pass through STD.esc().
 const V = (STD.views = {});
 const t = STD.t, esc = STD.esc;
 
@@ -50,7 +50,7 @@ function wireSearch(input, box) {
 
 // ── HOME ──────────────────────────────────────────────────────────────────
 V.home = async (root) => {
-  setMeta("SuisTonDéputé.fr — " + t("meta.tagline"), t("meta.sub"), "https://suistondepute.zlef.fr/");
+  setMeta("FicheDéputé.fr — " + t("meta.tagline"), t("meta.sub"), "https://fichedepute.fr/");
   const stats = await STD.getJSON("/api/stats");
   const groupes = (await STD.getJSON("/api/groupes")).groupes;
   const meta = await STD.getJSON("/api/meta");
@@ -115,7 +115,7 @@ V.home = async (root) => {
 
 // ── LIST ──────────────────────────────────────────────────────────────────
 V.list = async (root) => {
-  setMeta(t("list.title") + " — SuisTonDéputé.fr", t("meta.sub"), "https://suistondepute.zlef.fr/deputes");
+  setMeta(t("list.title") + " — FicheDéputé.fr", t("meta.sub"), "https://fichedepute.fr/deputes");
   const { deputes } = await STD.getJSON("/api/deputes");
   const groups = [...new Set(deputes.map((d) => d.groupe))].sort();
   const deps = [...new Map(deputes.filter((d) => d.dep).map((d) => [d.dep, d.depNom])).entries()]
@@ -170,11 +170,11 @@ V.fiche = async (root, m) => {
   const d = await STD.getJSON("/api/depute/" + encodeURIComponent(slug));
   const g = d.groupe || { sigle: "NI", color: "#8a8f98", libelle: "Non inscrit" };
   const name = `${d.prenom} ${d.nom}`;
-  setMeta(`${name} — SuisTonDéputé.fr`,
+  setMeta(`${name} — FicheDéputé.fr`,
     `${name} (${g.sigle}) : ${d.presenceRate}% de participation aux scrutins publics. ${d.nPresent} scrutins sur ${d.nEligible}.`,
-    "https://suistondepute.zlef.fr/depute/" + d.slug);
+    "https://fichedepute.fr/depute/" + d.slug);
   const ogimg = document.querySelector('meta[property="og:image"]');
-  if (ogimg) ogimg.setAttribute("content", "https://suistondepute.zlef.fr/og/" + d.slug + ".svg");
+  if (ogimg) ogimg.setAttribute("content", "https://fichedepute.fr/og/" + d.slug + ".svg");
 
   const born = d.dateNaissance ? new Date(d.dateNaissance).toLocaleDateString(STD.lang, { year: "numeric", month: "long", day: "numeric" }) : null;
   const sortTag = (s) => {
@@ -254,7 +254,7 @@ V.fiche = async (root, m) => {
   });
   root.querySelector("#share").addEventListener("click", async () => {
     const url = location.href;
-    const shareData = { title: `${name} — SuisTonDéputé.fr`, text: `${name} : ${d.participationRate}% de participation aux scrutins.`, url };
+    const shareData = { title: `${name} — FicheDéputé.fr`, text: `${name} : ${d.participationRate}% de participation aux scrutins.`, url };
     if (navigator.share) { try { await navigator.share(shareData); } catch (e) {} }
     else { try { await navigator.clipboard.writeText(url); STD.toast(t("fiche.shared")); } catch (e) {} }
   });
@@ -262,7 +262,7 @@ V.fiche = async (root, m) => {
 
 // ── RANKINGS ──────────────────────────────────────────────────────────────
 V.rankings = async (root) => {
-  setMeta(t("rank.title") + " — SuisTonDéputé.fr", t("meta.sub"), "https://suistondepute.zlef.fr/classements");
+  setMeta(t("rank.title") + " — FicheDéputé.fr", t("meta.sub"), "https://fichedepute.fr/classements");
   const stats = await STD.getJSON("/api/stats");
   const tbl = (title, arr, field) => `
     <div class="panel" style="margin-bottom:20px">
@@ -284,7 +284,7 @@ V.rankings = async (root) => {
 
 // ── GROUPS ────────────────────────────────────────────────────────────────
 V.groups = async (root) => {
-  setMeta(t("groups.title") + " — SuisTonDéputé.fr", t("meta.sub"), "https://suistondepute.zlef.fr/groupes");
+  setMeta(t("groups.title") + " — FicheDéputé.fr", t("meta.sub"), "https://fichedepute.fr/groupes");
   const { groupes } = await STD.getJSON("/api/groupes");
   root.innerHTML = `<section class="block fade-in"><div class="wrap">
     <div class="sec-head"><h2>${esc(t("groups.title"))}</h2></div>
@@ -305,7 +305,7 @@ V.groups = async (root) => {
 
 // ── METHODO ───────────────────────────────────────────────────────────────
 V.methodo = async (root) => {
-  setMeta(t("methodo.title") + " — SuisTonDéputé.fr", t("meta.sub"), "https://suistondepute.zlef.fr/methode");
+  setMeta(t("methodo.title") + " — FicheDéputé.fr", t("meta.sub"), "https://fichedepute.fr/methode");
   const meta = await STD.getJSON("/api/meta");
   const d = meta.generatedAt ? new Date(meta.generatedAt).toLocaleDateString(STD.lang, { year: "numeric", month: "long", day: "numeric" }) : "—";
   root.innerHTML = `<section class="block fade-in"><div class="wrap">

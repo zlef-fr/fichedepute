@@ -1,4 +1,4 @@
-// SuisTonDéputé.fr — zero-dependency Node HTTP server.
+// FicheDéputé.fr — zero-dependency Node HTTP server.
 // Serves the static PWA + a small read-only JSON API over the pre-computed data.
 const http = require("http");
 const fs = require("fs");
@@ -87,4 +87,4 @@ const server = http.createServer((req, res) => {
 });
 
 data.load();
-server.listen(PORT, () => console.log(`SuisTonDéputé on :${PORT} — ${data.store.deputes.length} députés`));
+server.listen(PORT, () => console.log(`FicheDéputé on :${PORT} — ${data.store.deputes.length} députés`));

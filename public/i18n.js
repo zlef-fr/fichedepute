@@ -1,4 +1,4 @@
-// SuisTonDéputé.fr — i18n dictionaries. FR is the primary locale, EN the fallback.
+// FicheDéputé.fr — i18n dictionaries. FR is the primary locale, EN the fallback.
 // 2 locales only → no language picker (DA rule): zl-lang cookie → navigator.language → en.
 window.STD_I18N = {
   fr: {
