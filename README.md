@@ -1,5 +1,7 @@
 # FicheDéputé.fr
 
+![views](https://assets.zlef.fr/badge/views/zlef-fr/fichedepute.svg)
+
 La **fiche vivante** de chaque député·e de l'Assemblée nationale (17ᵉ législature) —
 participation aux scrutins, votes, absences — en clair et 100 % sourcé.
 
