@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<!--zlef-seo-->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Media Kit — FicheDéputé</title>
+<meta name="description" content="Logos, couleurs, bannières et stories officiels de FicheDéputé.fr, FicheSénateur.fr et FicheDéputé.eu. Assets libres pour la presse et les médias.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Media Kit — FicheDéputé">
+<meta property="og:description" content="Logos, couleurs, bannières et stories officiels — libres pour la presse.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#000091">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/icon-180.png">
+<link rel="manifest" href="/site.webmanifest">
+<!--/zlef-seo-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;850;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css?v=15">
+<style>
+  .mk-hero { padding: 46px 0 8px; position: relative; }
+  .mk-hero h1 { font-size: clamp(30px,5vw,46px); font-weight:850; letter-spacing:-1.2px; }
+  .mk-hero p.lead { margin-top:14px; font-size:clamp(16px,2.3vw,19px); color:var(--ink-2); max-width:60ch; }
+  .mk-tabs { display:flex; flex-wrap:wrap; gap:8px; margin:26px 0 6px; }
+  .mk-tab { display:flex; align-items:center; gap:9px; padding:9px 15px; border-radius:999px;
+            border:1.5px solid var(--line-2); background:#fff; color:var(--ink-2); font-weight:700; font-size:14.5px;
+            cursor:pointer; transition:transform .12s, box-shadow .16s, border-color .16s, background .16s; }
+  .mk-tab:hover { transform:translateY(-1px); box-shadow:var(--shadow-sm); }
+  .mk-tab .sw { width:16px; height:16px; border-radius:5px; flex:none; box-shadow:inset 0 0 0 1px rgba(0,0,0,.08); }
+  .mk-tab.active { color:#fff; border-color:transparent; box-shadow:var(--shadow); }
+  .mk-tab.active .sw { box-shadow:inset 0 0 0 1px rgba(255,255,255,.4); }
+
+  .mk-sec { padding:30px 0 6px; }
+  .mk-sec h2 { font-size:22px; font-weight:850; letter-spacing:-.5px; display:flex; align-items:center; gap:10px; }
+  .mk-sec .hint { color:var(--muted); font-size:14px; margin-top:5px; margin-bottom:16px; }
+
+  .mk-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:18px; }
+  .mk-card { background:var(--card); border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow-sm);
+             overflow:hidden; transition:transform .14s, box-shadow .16s; display:flex; flex-direction:column; }
+  .mk-card:hover { transform:translateY(-3px); box-shadow:var(--shadow); }
+  .mk-prev { display:grid; place-items:center; padding:18px; min-height:150px;
+             background:conic-gradient(from 45deg,#f4f6fb 0 25%,#eef1f8 0 50%,#f4f6fb 0 75%,#eef1f8 0) 0 0/22px 22px; }
+  .mk-prev.dark { background:#12121a; }
+  .mk-prev img { display:block; max-width:100%; max-height:230px; border-radius:6px;
+                 box-shadow:0 4px 18px rgba(16,24,64,.14); animation:fade .4s ease both; }
+  .mk-prev.plain img { box-shadow:none; }
+  .mk-meta { padding:13px 16px 15px; border-top:1px solid var(--line); display:flex; align-items:center;
+             justify-content:space-between; gap:10px; }
+  .mk-meta .nm { font-weight:750; font-size:14px; }
+  .mk-meta .dm { font-size:12px; color:var(--muted); margin-top:1px; }
+  .mk-dl { display:flex; gap:7px; flex:none; }
+  .mk-dl a { font-size:12.5px; font-weight:800; letter-spacing:.3px; padding:7px 11px; border-radius:9px;
+             border:1.5px solid var(--line-2); color:var(--bleu); background:#fff; transition:background .14s,border-color .14s; }
+  .mk-dl a:hover { background:var(--bleu-soft); text-decoration:none; border-color:var(--bleu-soft); }
+
+  .mk-colors { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:14px; }
+  .mk-color { border:1px solid var(--line); border-radius:14px; overflow:hidden; background:#fff; cursor:pointer;
+              box-shadow:var(--shadow-sm); transition:transform .12s, box-shadow .16s; }
+  .mk-color:hover { transform:translateY(-2px); box-shadow:var(--shadow); }
+  .mk-color .chip { height:78px; display:flex; align-items:flex-end; justify-content:flex-end; padding:8px; }
+  .mk-color .chip span { font-size:11px; font-weight:700; color:#fff; background:rgba(0,0,0,.28); padding:3px 7px;
+                         border-radius:6px; opacity:0; transition:opacity .15s; }
+  .mk-color:hover .chip span { opacity:1; }
+  .mk-color .cinfo { padding:10px 12px; }
+  .mk-color .cinfo .cn { font-weight:700; font-size:13.5px; }
+  .mk-color .cinfo .ch { font-size:12.5px; color:var(--muted); font-family:ui-monospace,SFMono-Regular,Menlo,monospace; text-transform:uppercase; }
+
+  .mk-note { margin:34px 0 10px; background:var(--bleu-soft); border:1px solid #cdd0ff; border-radius:16px;
+             padding:20px 22px; font-size:14.5px; color:var(--ink-2); line-height:1.6; }
+  .mk-note b { color:var(--ink); }
+  .mk-skel { height:180px; }
+  @media (max-width:560px){ .mk-meta{ flex-direction:column; align-items:flex-start; } }
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap top-inner">
+  <a class="brand" href="/" data-link id="brandLink">
+    <span class="mkflag" id="brandFlag"></span>
+    <span id="brandName"></span>
+  </a>
+  <nav class="main" style="margin-left:auto">
+    <a href="/" id="backHome">← <span data-t="back">Retour au site</span></a>
+  </nav>
+</div></header>
+
+<main>
+  <section class="mk-hero"><div class="wrap">
+    <h1 data-t="h1">Media Kit</h1>
+    <p class="lead" data-t="lead">Logos, couleurs, bannières et stories officiels — libres d'utilisation pour la presse, les médias et les partages. Chaque asset est disponible en SVG (vectoriel) et PNG (haute résolution).</p>
+    <div class="mk-tabs" id="tabs"></div>
+  </div></section>
+
+  <div class="wrap" id="content"><div class="spinner"></div></div>
+</main>
+
+<footer class="foot"><div class="wrap">
+  <div class="foot-credit">
+    <span data-t="madeby">Projet indépendant, réalisé avec patriotisme</span>
+    <span class="fr-flag" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span>par <a href="https://zlef.fr">zlef.fr</a></span>
+  </div>
+</div></footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const T = {
+  fr: {
+    back:"Retour au site", h1:"Media Kit",
+    lead:"Logos, couleurs, bannières et stories officiels — libres d'utilisation pour la presse, les médias et les partages. Chaque asset est disponible en SVG (vectoriel) et PNG (haute résolution).",
+    madeby:"Projet indépendant, réalisé avec patriotisme",
+    logos:"Logos", logosH:"Icône et logo complet, sur fond clair et sur fond foncé.",
+    colors:"Couleurs", colorsH:"Cliquez sur une couleur pour copier son code hexadécimal.",
+    banners:"Bannières", bannersH:"Formats prêts pour X, LinkedIn et le partage social (Open Graph).",
+    stories:"Stories", storiesH:"Format vertical 9:16 pour Instagram, TikTok et WhatsApp.",
+    copied:"Copié :", note:"<b>Utilisation.</b> Ces ressources sont fournies pour présenter, citer ou créer un lien vers le service. Merci de ne pas les déformer, recadrer le logo ni en modifier les couleurs. Le nom et les données restent la propriété de leurs sources officielles.",
+    network:"Réseau 3-en-1"
+  },
+  en: {
+    back:"Back to site", h1:"Media Kit",
+    lead:"Official logos, colors, banners and stories — free to use for press, media and sharing. Every asset is available as SVG (vector) and PNG (high resolution).",
+    madeby:"Independent project, built with patriotism",
+    logos:"Logos", logosH:"Icon and full logo, on light and dark backgrounds.",
+    colors:"Colors", colorsH:"Click a color to copy its hex code.",
+    banners:"Banners", bannersH:"Ready-made sizes for X, LinkedIn and social sharing (Open Graph).",
+    stories:"Stories", storiesH:"Vertical 9:16 format for Instagram, TikTok and WhatsApp.",
+    copied:"Copied:", note:"<b>Usage.</b> These assets are provided to present, cite or link to the service. Please don't distort them, crop the logo or alter its colors. The name and data remain the property of their official sources.",
+    network:"3-in-1 network"
+  }
+};
+const lang = (document.cookie.match(/zl-lang=(fr|en)/)||[])[1] || ((navigator.language||"").startsWith("en") ? "en" : "fr");
+const t = T[lang];
+document.documentElement.lang = lang;
+document.querySelectorAll("[data-t]").forEach(el => el.innerHTML = t[el.dataset.t] || el.textContent);
+
+const toast = (msg) => { const el=document.getElementById("toast"); el.textContent=msg; el.classList.add("show"); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove("show"),1600); };
+
+const flagHTML = (b) => b.flag==="eu"
+  ? `<span style="font-size:20px;line-height:1">🇪🇺</span>`
+  : b.flag==="family"
+  ? `<span style="display:inline-flex;gap:2px"><i style="width:6px;height:16px;background:#000091;border-radius:2px"></i><i style="width:6px;height:16px;background:#e1000f;border-radius:2px"></i><i style="width:6px;height:16px;background:#ffcc00;border-radius:2px"></i></span>`
+  : `<span class="flag" style="width:26px;height:26px;display:inline-grid;grid-template-columns:1fr 1fr 1fr;border-radius:6px;overflow:hidden;box-shadow:var(--shadow-sm)"><i style="background:#000091"></i><i style="background:#fff"></i><i style="background:#e1000f"></i></span>`;
+
+const brandTitle = (b) => b.key==="family"
+  ? `<b style="color:${b.primary}">Fiche</b>Député <span style="color:var(--muted);font-weight:600">· ${t.network}</span>`
+  : `<b style="color:${b.primary}">${b.fiche}</b>${b.rest}<span style="color:${b.accent}">${b.tld}</span>`;
+
+let CFG;
+async function boot() {
+  CFG = await (await fetch("/mediakit/config.json")).json();
+  // header reflects the site we're on
+  const self = CFG.brands.find(b => b.key === CFG.current) || CFG.brands[0];
+  document.getElementById("brandFlag").innerHTML = flagHTML(self);
+  document.getElementById("brandName").innerHTML = brandTitle(self);
+
+  const tabs = document.getElementById("tabs");
+  tabs.innerHTML = CFG.brands.map(b =>
+    `<button class="mk-tab" data-b="${b.key}" style="--c:${b.primary}">
+       <span class="sw" style="background:${b.primary}"></span>
+       ${b.key==="family" ? t.network : b.fiche+b.rest+b.tld}
+     </button>`).join("");
+  tabs.querySelectorAll(".mk-tab").forEach(el => el.onclick = () => select(el.dataset.b));
+  select(CFG.current);
+}
+
+function palette(b) {
+  const base = [
+    { cn: b.key==="eu" ? "Bleu Europe" : "Bleu France", ch: b.primary },
+    { cn: b.key==="eu" ? "Or Europe" : "Rouge Marianne", ch: b.accent },
+    { cn:"Encre", ch:"#161616" },
+    { cn:"Fond", ch:"#f4f6fb" },
+    { cn:"Ligne", ch:"#e6e9f1" },
+  ];
+  if (b.key==="family") base.splice(2,0,{ cn:"Or Europe", ch:"#ffcc00" });
+  return base;
+}
+
+function select(key) {
+  document.querySelectorAll(".mk-tab").forEach(el => {
+    const on = el.dataset.b === key;
+    el.classList.toggle("active", on);
+    el.style.background = on ? el.style.getPropertyValue("--c") : "#fff";
+  });
+  const b = CFG.brands.find(x => x.key === key);
+  const c = document.getElementById("content");
+
+  const card = (k) => {
+    const dark = k.id === "wordmark-dark";
+    const plain = k.group === "logo";
+    return `<div class="mk-card">
+      <div class="mk-prev ${dark?"dark":""} ${plain?"plain":""}">
+        <img loading="lazy" src="/mediakit/asset/${b.key}/${k.id}.svg" alt="${k.label}" style="${k.id==='story'?'max-height:280px':''}">
+      </div>
+      <div class="mk-meta">
+        <div><div class="nm">${lang==="en"?k.labelEn:k.label}</div><div class="dm">${k.w}×${k.h}</div></div>
+        <div class="mk-dl">
+          <a href="/mediakit/asset/${b.key}/${k.id}.svg?dl=1" download>SVG</a>
+          <a href="/mediakit/asset/${b.key}/${k.id}.png?dl=1" download>PNG</a>
+        </div>
+      </div>
+    </div>`;
+  };
+  const group = (id) => CFG.kinds.filter(k => k.group === id).map(card).join("");
+
+  c.innerHTML = `
+    <section class="mk-sec"><h2>${t.logos}</h2><div class="hint">${t.logosH}</div>
+      <div class="mk-grid">${group("logo")}</div></section>
+    <section class="mk-sec"><h2>${t.colors}</h2><div class="hint">${t.colorsH}</div>
+      <div class="mk-colors">${palette(b).map(col =>
+        `<div class="mk-color" data-h="${col.ch}"><div class="chip" style="background:${col.ch}"><span>${col.ch.toUpperCase()}</span></div>
+           <div class="cinfo"><div class="cn">${col.cn}</div><div class="ch">${col.ch}</div></div></div>`).join("")}</div></section>
+    <section class="mk-sec"><h2>${t.banners}</h2><div class="hint">${t.bannersH}</div>
+      <div class="mk-grid">${group("banner")}</div></section>
+    <section class="mk-sec"><h2>${t.stories}</h2><div class="hint">${t.storiesH}</div>
+      <div class="mk-grid">${group("story")}</div></section>
+    <div class="mk-note">${t.note}</div>`;
+
+  c.classList.add("fade-in");
+  setTimeout(() => c.classList.remove("fade-in"), 400);
+  c.querySelectorAll(".mk-color").forEach(el => el.onclick = () => {
+    navigator.clipboard?.writeText(el.dataset.h);
+    toast(t.copied + " " + el.dataset.h.toUpperCase());
+  });
+}
+
+boot().catch(e => { document.getElementById("content").innerHTML = "<p style='padding:40px;color:#b34000'>Erreur de chargement.</p>"; console.error(e); });
+</script>
+<script defer src="https://assets.zlef.fr/track.js"></script>
+</body>
+</html>

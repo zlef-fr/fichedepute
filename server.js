@@ -8,7 +8,11 @@ const og = require("./lib/og");
 const tracker = require("./lib/tracker");
 const seo = require("./lib/seo");
 const faq = require("./lib/faq");
+const mediakit = require("./lib/mediakit");
 const { Resvg } = require("@resvg/resvg-js");
+
+// which brand this deployment IS (highlighted first in the media kit) — fr | senat | eu
+const SITE_BRAND = process.env.SITE_BRAND || "fr";
 
 const isSlug = (s) => !!data.store.bySlug[s];
 
@@ -144,6 +148,35 @@ const server = http.createServer((req, res) => {
       }
       send(res, 200, buf, { "content-type": MIME[".png"], "cache-control": "public, max-age=86400" });
     });
+  }
+
+  // ---- Media kit ----------------------------------------------------------
+  if (url === "/mediakit" || url === "/mediakit/") {
+    return fs.readFile(path.join(PUB, "mediakit.html"), (e, buf) =>
+      e ? send(res, 404, "not found")
+        : send(res, 200, buf, { "content-type": MIME[".html"], "cache-control": "no-cache" }));
+  }
+  if (url === "/mediakit/config.json") {
+    return json(res, { current: SITE_BRAND, brands: Object.values(mediakit.BRANDS), kinds: mediakit.KINDS }, 200, "public, max-age=600");
+  }
+  if (url.startsWith("/mediakit/asset/")) {
+    const m = url.slice("/mediakit/asset/".length).split("?")[0].match(/^([a-z]+)\/([a-z0-9-]+)\.(svg|png)$/);
+    if (!m) return send(res, 404, "not found");
+    const [, brand, kind, ext] = m;
+    const svg = mediakit.render(brand, kind);
+    if (!svg) return send(res, 404, "not found");
+    const dl = /[?&]dl=/.test(url);
+    const fname = `fichedepute-${brand}-${kind}.${ext}`;
+    const disp = dl ? { "content-disposition": `attachment; filename="${fname}"` } : {};
+    if (ext === "svg") {
+      return send(res, 200, svg, { "content-type": MIME[".svg"], "cache-control": "public, max-age=86400", ...disp });
+    }
+    try {
+      return send(res, 200, renderPng(svg), { "content-type": MIME[".png"], "cache-control": "public, max-age=86400", ...disp });
+    } catch (e) {
+      console.error("mediakit png render failed:", e.message);
+      return send(res, 200, svg, { "content-type": MIME[".svg"], "cache-control": "public, max-age=600" });
+    }
   }
 
   // ---- static -------------------------------------------------------------

@@ -6,6 +6,7 @@ services:
     network_mode: host
     environment:
       - PORT=10091
+      - SITE_BRAND=fr
       - VAR_DIR=/app/var
     volumes:
       - ./var:/app/var
