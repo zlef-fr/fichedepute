@@ -211,6 +211,18 @@ section.block { padding: 34px 0; }
 .prose h1 { font-size: 28px; font-weight: 850; margin-bottom: 16px; letter-spacing: -.6px; }
 .prose p { color: var(--ink-2); font-size: 16px; margin-bottom: 14px; }
 .prose .upd { font-size: 13px; color: var(--muted); margin-top: 8px; }
+.faq-title { font-size: 21px; font-weight: 800; letter-spacing: -.4px; margin: 26px 0 12px; }
+.faq { display: grid; gap: 10px; margin-bottom: 6px; }
+.faq-item { border: 1px solid var(--line); border-radius: 14px; background: #fbfcfe; overflow: hidden; transition: border-color .2s, box-shadow .2s; }
+.faq-item[open] { border-color: var(--line-2); box-shadow: var(--shadow-sm); background: #fff; }
+.faq-item summary { list-style: none; cursor: pointer; padding: 16px 44px 16px 18px; font-weight: 700; font-size: 15.5px; color: var(--ink); position: relative; user-select: none; }
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after { content: "+"; position: absolute; right: 18px; top: 50%; transform: translateY(-50%); font-size: 22px; font-weight: 400; color: var(--bleu); transition: transform .25s ease; }
+.faq-item[open] summary::after { transform: translateY(-50%) rotate(45deg); }
+.faq-item summary:hover { color: var(--bleu); }
+.faq-a { padding: 0 18px 16px; color: var(--ink-2); font-size: 15px; line-height: 1.6; animation: faqIn .25s ease; }
+.faq-a b { color: var(--ink); }
+@keyframes faqIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
 
 /* ── Footer ─────────────────────────────────────────────────────────────── */
 footer.foot { border-top: 1px solid var(--line); margin-top: 50px; padding: 28px 0 48px; color: var(--muted); font-size: 13.5px; }

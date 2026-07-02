@@ -7,6 +7,7 @@ const data = require("./lib/data");
 const og = require("./lib/og");
 const tracker = require("./lib/tracker");
 const seo = require("./lib/seo");
+const faq = require("./lib/faq");
 const { Resvg } = require("@resvg/resvg-js");
 
 const isSlug = (s) => !!data.store.bySlug[s];
@@ -76,6 +77,7 @@ const server = http.createServer((req, res) => {
     if (p === "/api/stats") return json(res, data.store.stats);
     if (p === "/api/scrutins") return json(res, { scrutins: data.store.scrutins });
     if (p === "/api/meta") return json(res, data.store.meta);
+    if (p === "/api/faq") return json(res, faq, 200, "public, max-age=3600");
     if (p === "/api/indemnite") return json(res, data.store.indemnite || {}, 200, "public, max-age=86400");
     if (p === "/api/game/round") {
       const round = data.gameRound();
