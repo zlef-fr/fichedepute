@@ -208,7 +208,8 @@ V.fiche = async (root, m) => {
       </div>
 
       <div class="gauges">
-        ${STD.ring(d.presenceRate, STD.presenceColor(d.presenceRate), t("fiche.participation"), t("fiche.of", { n: d.nEligible }))}
+        ${STD.ring(d.presenceRate, STD.presenceColor(d.presenceRate), t("fiche.presence.ring"), t("fiche.of", { n: d.nEligible }))}
+        ${STD.ring(d.participationRate, STD.presenceColor(d.participationRate), t("fiche.participation"), t("fiche.exprime.sub", { n: (d.nExprimes != null ? d.nExprimes : 0).toLocaleString(STD.lang) }))}
         ${d.loyaltyRate != null ? STD.ring(d.loyaltyRate, g.color, t("fiche.loyalty"), t("fiche.loyalty.sub", { g: g.sigle })) : ""}
         <div class="votes-split" style="align-self:center">
           <div class="vsplit pour"><b>${d.nPour}</b><span>${esc(t("fiche.pour"))}</span></div>
