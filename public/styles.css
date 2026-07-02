@@ -110,7 +110,7 @@ nav.main a.active { color: var(--bleu); background: var(--bleu-soft); }
 /* ── Sections ───────────────────────────────────────────────────────────── */
 section.block { padding: 34px 0; }
 .sec-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 18px; }
-.sec-head h2 { font-size: 24px; font-weight: 800; letter-spacing: -.5px; }
+.sec-head h1, .sec-head h2 { font-size: 24px; font-weight: 800; letter-spacing: -.5px; }
 .sec-head a { font-size: 14px; font-weight: 600; }
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
