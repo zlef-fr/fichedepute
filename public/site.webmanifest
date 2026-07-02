@@ -7,7 +7,15 @@
   "background_color": "#f4f6fb",
   "theme_color": "#000091",
   "icons": [
-    { "src": "https://assets.zlef.fr/favicon.svg", "sizes": "any", "type": "image/svg+xml" },
-    { "src": "https://assets.zlef.fr/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
   ]
 }
