@@ -7,6 +7,7 @@ const data = require("./lib/data");
 const og = require("./lib/og");
 const tracker = require("./lib/tracker");
 const seo = require("./lib/seo");
+const locales = require("./lib/locales");
 const faq = require("./lib/faq");
 const mediakit = require("./lib/mediakit");
 const { Resvg } = require("@resvg/resvg-js");
@@ -70,6 +71,16 @@ function serveStatic(req, res, urlPath) {
 
 const server = http.createServer((req, res) => {
   const url = req.url;
+
+  // ---- locale: the default locale owns the bare path; a redundant
+  // "/<default>" prefix 301s to the canonical bare URL (no duplicate content).
+  const pathOnly = url.split("?")[0];
+  const defPrefix = new RegExp(`^/${locales.DEFAULT}(/|$)`);
+  if (defPrefix.test(pathOnly)) {
+    const stripped = pathOnly.replace(new RegExp(`^/${locales.DEFAULT}`), "") || "/";
+    const qs = url.includes("?") ? url.slice(url.indexOf("?")) : "";
+    return send(res, 301, "", { location: stripped + qs });
+  }
 
   // ---- API ----------------------------------------------------------------
   if (url.startsWith("/api/")) {
