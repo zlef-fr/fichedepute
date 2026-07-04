@@ -112,7 +112,7 @@ section.block { padding: 34px 0; }
 .sec-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 18px; }
 .sec-head h1, .sec-head h2 { font-size: 24px; font-weight: 800; letter-spacing: -.5px; }
 .sec-head a { font-size: 14px; font-weight: 600; }
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.grid-2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; }
 
 /* ── Deputy chip / avatar ───────────────────────────────────────────────── */
 .avatar { width: 44px; height: 44px; border-radius: 50%; flex: none; display: grid; place-items: center; font-weight: 800; color: #fff; font-size: 15px; letter-spacing: .3px; }
@@ -333,7 +333,7 @@ footer.foot .fi { display: flex; justify-content: space-between; gap: 16px; flex
   nav.main a { padding: 12px 14px; }
   .menu-btn { display: block; }
   .stats { grid-template-columns: 1fr; }
-  .grid-2 { grid-template-columns: 1fr; }
+  .grid-2 { grid-template-columns: minmax(0, 1fr); }
   .fiche-cols { grid-template-columns: 1fr; }
   .votes-split { grid-template-columns: 1fr 1fr 1fr; }
 }
