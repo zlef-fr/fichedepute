@@ -1,16 +1,48 @@
 // FicheDéputé.fr — SPA core: i18n, routing, data fetching, shared helpers.
 const STD = (window.STD = {});
 
-// ── i18n (2 locales → silent resolve, no picker) ──────────────────────────
+// ── i18n & locale routing ─────────────────────────────────────────────────
+// The URL is authoritative: the default locale owns the bare path, every other
+// locale lives under "/<lang>". Resolution order for what to render:
+//   path prefix  →  ?lang=  →  (default). A zl-lang cookie only soft-redirects a
+// returning visitor from the bare default path to their locale (bots carry no
+// cookie, so the canonical stays crawlable).
+const LOCALES = ["fr", "en"];
+const DEFAULT_LANG = "fr";
 function cookie(name) {
   const m = document.cookie.match("(^|;)\\s*" + name + "\\s*=\\s*([^;]+)");
   return m ? decodeURIComponent(m.pop()) : null;
 }
-STD.lang = (() => {
+// Strip a leading "/<lang>" segment, returning the bare route path.
+STD.stripLocale = (p) => {
+  const m = p.match(/^\/([a-z]{2})(\/.*)?$/);
+  return m && LOCALES.includes(m[1]) ? m[2] || "/" : p || "/";
+};
+// Build the URL path for a bare route in a locale (bare for the default).
+STD.localized = (p, lang) => {
+  const bare = STD.stripLocale(p);
+  const clean = bare === "/" ? "" : bare;
+  return lang === DEFAULT_LANG ? clean || "/" : `/${lang}${clean}`;
+};
+function pathLang() {
+  const m = location.pathname.match(/^\/([a-z]{2})(\/|$)/);
+  return m && LOCALES.includes(m[1]) ? m[1] : null;
+}
+function queryLang() {
+  const q = new URLSearchParams(location.search).get("lang");
+  return LOCALES.includes(q) ? q : null;
+}
+STD.lang = pathLang() || queryLang() || DEFAULT_LANG;
+// ?lang= on a bare URL → normalise to the locale-prefixed path.
+if (!pathLang() && queryLang()) history.replaceState({}, "", STD.localized(location.pathname, STD.lang));
+// Returning visitor on the bare default path → honour their saved locale.
+else if (!pathLang() && !queryLang()) {
   const c = cookie("zl-lang");
-  if (c === "fr" || c === "en") return c;
-  return (navigator.language || "en").toLowerCase().startsWith("fr") ? "fr" : "en";
-})();
+  if (c && c !== DEFAULT_LANG && LOCALES.includes(c)) {
+    STD.lang = c;
+    history.replaceState({}, "", STD.localized(location.pathname, c));
+  }
+}
 document.cookie = `zl-lang=${STD.lang};path=/;domain=.zlef.fr;max-age=31536000`;
 document.documentElement.lang = STD.lang;
 const DICT = window.STD_I18N;
@@ -79,8 +111,19 @@ const routes = [
   { re: /^\/methode\/?$/, view: "methodo" },
 ];
 STD.go = (path, replace) => {
-  if (replace) history.replaceState({}, "", path);
-  else history.pushState({}, "", path);
+  const full = STD.localized(path, STD.lang);
+  if (replace) history.replaceState({}, "", full);
+  else history.pushState({}, "", full);
+  render();
+};
+// Switch locale in place: keep the current route, swap the prefix, re-render.
+STD.setLang = (lang) => {
+  if (!LOCALES.includes(lang) || lang === STD.lang) return;
+  STD.lang = lang;
+  document.cookie = `zl-lang=${lang};path=/;domain=.zlef.fr;max-age=31536000`;
+  document.documentElement.lang = lang;
+  history.replaceState({}, "", STD.localized(location.pathname, lang));
+  document.querySelectorAll("[data-i18n]").forEach((el) => (el.textContent = STD.t(el.dataset.i18n)));
   render();
 };
 function highlightNav(view) {
@@ -88,7 +131,7 @@ function highlightNav(view) {
   document.querySelector("nav.main")?.classList.remove("open");
 }
 async function render() {
-  const path = location.pathname;
+  const path = STD.stripLocale(location.pathname);
   const root = document.getElementById("app");
   let match = routes.find((r) => r.re.test(path)) || routes[0];
   const m = path.match(match.re);
