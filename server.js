@@ -77,7 +77,9 @@ const server = http.createServer((req, res) => {
   const pathOnly = url.split("?")[0];
   const defPrefix = new RegExp(`^/${locales.DEFAULT}(/|$)`);
   if (defPrefix.test(pathOnly)) {
-    const stripped = pathOnly.replace(new RegExp(`^/${locales.DEFAULT}`), "") || "/";
+    let stripped = pathOnly.replace(new RegExp(`^/${locales.DEFAULT}`), "") || "/";
+    // never emit a protocol-relative or non-absolute Location (open-redirect guard)
+    if (!stripped.startsWith("/") || stripped.startsWith("//")) stripped = "/";
     const qs = url.includes("?") ? url.slice(url.indexOf("?")) : "";
     return send(res, 301, "", { location: stripped + qs });
   }
