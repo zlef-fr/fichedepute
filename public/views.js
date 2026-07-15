@@ -161,6 +161,9 @@ V.list = async (root) => {
       </div></a>`).join("") || `<div class="sr-none">${esc(t("search.none"))}</div>`;
   }
   [fq, fg, fd, fs].forEach((el) => el.addEventListener("input", apply));
+  // deep-link search: /deputes?q=… (used by the WebSite SearchAction JSON-LD)
+  const q0 = new URLSearchParams(location.search).get("q");
+  if (q0) fq.value = q0;
   apply();
 };
 

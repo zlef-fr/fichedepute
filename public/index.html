@@ -23,12 +23,11 @@
 <link rel="apple-touch-icon" href="/icon-180.png">
 <link rel="manifest" href="/site.webmanifest">
 <!--/zlef-seo-->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;850;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/styles.css?v=17">
+<link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles.css?v=18">
 </head>
 <body>
+<a class="skip-link" href="#app" data-i18n="skip">Aller au contenu</a>
 <header class="top"><div class="wrap top-inner">
   <a class="brand" href="/" data-link>
     <span class="flag"><i></i><i></i><i></i></span>
@@ -59,9 +58,9 @@
   </div>
 </div></footer>
 
-<script src="/i18n.js?v=17"></script>
-<script src="/app.js?v=17"></script>
-<script src="/views.js?v=17"></script>
+<script src="/i18n.js?v=18"></script>
+<script src="/app.js?v=18"></script>
+<script src="/views.js?v=18"></script>
 <script>
   document.querySelector(".menu-btn").addEventListener("click", () => document.querySelector("nav.main").classList.toggle("open"));
   STD.boot();
